@@ -38,10 +38,17 @@ function setUpCanvas() {
     gl.enable(gl.DEPTH_TEST);
 }
 
-function loadProgram() {
-    let vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, vs);
-    let fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, fs);
-    program = utils.createProgram(gl, vertexShader, fragmentShader);
+async function loadProgram() {
+    let path = window.location.pathname;
+    let page = path.split("/").pop();
+    let baseDir = window.location.href.replace(page, '');
+    let shaderDir = baseDir+"src/shaders/";
+
+    await utils.loadFiles([shaderDir + 'vertexShader.glsl', shaderDir + 'fragmentShader.glsl'], function (shaderText) {
+        let vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
+        let fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
+        program = utils.createProgram(gl, vertexShader, fragmentShader);
+    });
     gl.useProgram(program);
 }
 
@@ -102,8 +109,6 @@ function drawScene() {      //Todo: delete
 
 
 function main() {
-    setUpCanvas();
-    loadProgram();
     loadAttribAndUniformsLocations();
     initializeMatrices();
 
@@ -117,5 +122,12 @@ function main() {
     drawScene();
 }
 
-window.onload = main;
+async function init() {
+    setUpCanvas();
+    await loadProgram();
+
+    main();
+}
+
+window.onload = init;
 
