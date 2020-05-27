@@ -1,5 +1,12 @@
 let lastUpdateTime;     //Todo: delete
 
+function loadSceneObjects() {
+    let obj1 = new SceneObject();
+    obj1.setParams({x: -1.0, z: -1.0})
+    let obj2 = new SceneObject();
+    obj2.setParams({x: +1.0, z: -1.0});
+    sceneObjects.push(obj1, obj2);
+}
 
 function loadAttribAndUniformsLocations() {
     locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
@@ -18,7 +25,7 @@ function passAssetsDataToShaders() {
     loadIndexBuffer(new Uint16Array(indices));
 }
 
-function animate(){         //Todo: delete
+function animate(){
     let currentTime = (new Date).getTime();
     
     for(let i = 0; i < sceneObjects.length; i++) {
@@ -35,7 +42,7 @@ function animate(){         //Todo: delete
     lastUpdateTime = currentTime;
 }
 
-function drawScene() {      //Todo: erase
+function drawScene() {
     animate();
 
     eraseCanvas();
@@ -68,11 +75,7 @@ async function init() {
     setUpCanvas();
     await loadProgram(false);
 
-    let obj1 = new SceneObject();
-    obj1.setParams({x: -1.0, z: -1.0})
-    let obj2 = new SceneObject();
-    obj2.setParams({x: +1.0, z: -1.0});
-    sceneObjects.push(obj1, obj2);
+    loadSceneObjects();
 
     main();
 }
