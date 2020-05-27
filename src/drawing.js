@@ -68,8 +68,10 @@ async function init() {
     setUpCanvas();
     await loadProgram(false);
 
-    let obj1 = (new SceneObject()).setParams({x: -1.0, z: -1.0});
-    let obj2 = (new SceneObject()).setParams({x: +1.0, z: -1.0});
+    let obj1 = new SceneObject();
+    obj1.setParams({x: -1.0, z: -1.0})
+    let obj2 = new SceneObject();
+    obj2.setParams({x: +1.0, z: -1.0});
     sceneObjects.push(obj1, obj2);
 
     main();
