@@ -3,15 +3,14 @@ var vs =
 `#version 300 es
 
 in vec3 a_position;
-in vec3 a_color;
-out vec3 colorV;
+in vec2 a_uv;
+out vec2 uvFS;
 
 uniform mat4 wvpMatrix;
 
 void main() {
-colorV = a_color;
-gl_Position = wvpMatrix * vec4(a_position,1.0);
-
+    uvFS = a_uv;
+    gl_Position = wvpMatrix * vec4(a_position,1.0);
 }`;
 
 var fs =
@@ -20,9 +19,10 @@ var fs =
 
 precision mediump float;
 
-in vec3 colorV;
+in vec2 uvFS;
 out vec4 outColor;
+uniform sampler2D u_texture;
 
 void main() {
-    outColor = vec4(colorV,1.0);
+    outColor = texture(u_texture, uvFS);
 }`;

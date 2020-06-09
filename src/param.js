@@ -1,6 +1,7 @@
 let gl;
 let program;
 let vao;
+let texture;
 
 let a;
 let n = 0.1;
@@ -27,12 +28,38 @@ let matrices = {
 //List of locations we are going to use in the shaders
 let locations = {
     positionAttributeLocation: null,
+    uvAttributeLocation: null,
     colorAttributeLocation: null,
-    wvpMatrixLocation: null
+    wvpMatrixLocation: null,
+    textureLocation: null
 }
 
 let assets = {
     electron: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null
+    },
+    carbon: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null
+    },
+    hydrogen: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null
+    },
+    helium: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null
+    },
+    oxygen: {
         vertices: null,
         normals: null,
         indices: null,
