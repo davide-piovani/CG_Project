@@ -16,7 +16,7 @@ gl_Position = wvpMatrix * vec4(a_position,1.0);
 
 var fs =
 
-    `#version 300 es
+`#version 300 es
 
 precision mediump float;
 

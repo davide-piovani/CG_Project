@@ -11,7 +11,7 @@ class SceneObject {
         if (s) this.s = s;
     };
 
-    getObjectWorldMatrix = () => {
+    getWorldMatrix = () => {
         return utils.MakeWorld(this.x, this.y, this.z, this.rx, this.ry, this.rz, this.s);
     };
 }

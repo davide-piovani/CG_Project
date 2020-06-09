@@ -48,7 +48,7 @@ function drawScene() {
     eraseCanvas();
 
     sceneObjects.forEach((sceneObject) => {
-        let worldViewMatrix = utils.multiplyMatrices(matrices.viewMatrix, sceneObject.getObjectWorldMatrix());
+        let worldViewMatrix = utils.multiplyMatrices(matrices.viewMatrix, sceneObject.getWorldMatrix());
         let wvpMatrix = utils.multiplyMatrices(matrices.projectionMatrix, worldViewMatrix);
 
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
@@ -73,9 +73,25 @@ function main() {
 
 async function init() {
     setUpCanvas();
-    await loadProgram(false);
+    await loadProgram(true);
 
     loadSceneObjects();
+
+    let path = window.location.pathname;
+    let page = path.split("/").pop();
+    let baseDir = window.location.href.replace(page, '');
+    let objPath = baseDir+"src/assets/electron.obj";
+    console.log(objPath);
+
+    var objStr = await utils.get_objstr(objPath);
+    var objModel = new OBJ.Mesh(objStr);
+
+    var modelVertices = objModel.vertices;
+    var modelNormals = objModel.normals;
+    var modelIndices = objModel.indices;
+    var modelTexCoords = objModel.textures;
+
+    console.log(modelVertices);
 
     main();
 }

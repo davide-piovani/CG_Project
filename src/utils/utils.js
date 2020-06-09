@@ -62,6 +62,16 @@ createProgram:function(gl, vertexShader, fragmentShader) {
 		xmlHttp.send();
 	},
 
+	get_objstr: async function(url){
+		var response = await fetch(url);
+		if (!response.ok) {
+			alert('Network response was not ok');
+			return;
+		}
+		var text = await response.text();
+		return text;
+	},
+
 	//function to convert decimal value of colors
 	decimalToHex: function(d, padding) {
 		var hex = Number(d).toString(16);
