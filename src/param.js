@@ -9,6 +9,10 @@ let f = 100.0;
 let w = 3;              //only if we use parallel projection
 let fieldOfView = 90;   //only if we use perspective projection
 
+let e_scale = 0.15;
+let nucleous_scale = 0.2;
+
+let atom;
 let sceneObjects = [];
 
 let paths = {
@@ -44,31 +48,36 @@ let assets = {
         vertices: null,
         normals: null,
         indices: null,
-        textures: null
-    },
-    carbon: {
-        vertices: null,
-        normals: null,
-        indices: null,
-        textures: null
+        textures: null,
+        n_el: 1
     },
     hydrogen: {
         vertices: null,
         normals: null,
         indices: null,
-        textures: null
+        textures: null,
+        n_el: 1
     },
     helium: {
         vertices: null,
         normals: null,
         indices: null,
-        textures: null
+        textures: null,
+        n_el: 2
+    },
+    carbon: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null,
+        n_el: 6
     },
     oxygen: {
         vertices: null,
         normals: null,
         indices: null,
-        textures: null
+        textures: null,
+        n_el: 8
     },
     texture: null
 }

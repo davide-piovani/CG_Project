@@ -1,41 +1,25 @@
 let lastUpdateTime;     //Todo: delete
 
-function loadSceneObjects() {
-    let obj1 = new SceneObject();
-    obj1.setParams({x: -1.3, z: -1.0, s: 0.15, asset: assets.electron});
-    let obj2 = new SceneObject();
-    obj2.setParams({x: 0.0, z: -1.0, s: 0.2, asset: assets.carbon});
-    let obj3 = new SceneObject();
-    obj3.setParams({x: 0.5, z: -1.0, s: 0.2, asset: assets.hydrogen});
-    let obj4 = new SceneObject();
-    obj4.setParams({x: 1.0, z: -1.0, s: 0.2, asset: assets.helium});
-    let obj5 = new SceneObject();
-    obj5.setParams({x: 0.5, z: -1.0, y: -1.0, s: 0.2, asset: assets.oxygen});
-    sceneObjects.push(obj1, obj2, obj3, obj4, obj5);
-}
-
-function addObjectToScene(params)
-{
+function addObjectToScene(params) {
     let obj = new SceneObject();
     obj.setParams(params);
     sceneObjects.push(obj);
 }
 
-function setAtom(asset)
-{
+function setAtom(asset) {
+    atom = asset;
     sceneObjects = [];
-    let nucleus = new SceneObject();
-    switch(asset)
-    {
-        case assets.carbon:
-            for(let i=0; i<8; i++) addObjectToScene({})
 
+    addObjectToScene({x: 0.0, z: -1.0, s: nucleous_scale, asset: asset});
+    let partialAngle = 2 * Math.PI / asset.n_el;
 
-
+    for(let i = 0; i < asset.n_el; i++) {
+        addObjectToScene({x: Math.cos(partialAngle*i), y: Math.sin(partialAngle*i), z: -1.0, s: e_scale, asset: assets.electron});
     }
+
 }
 
-async function getAsset(path) {
+async function getAsset(path, n) {
     let objStr = await utils.get_objstr(path);
     let objModel = new OBJ.Mesh(objStr);
 
@@ -43,7 +27,8 @@ async function getAsset(path) {
         vertices: objModel.vertices,
         normals: objModel.vertexNormals,
         indices: objModel.indices,
-        textures: objModel.textures
+        textures: objModel.textures,
+        n_el: n
     }
 }
 
@@ -54,11 +39,11 @@ async function loadAssets() {
     let heliumPath = paths.assets + "/He/nucleusHe.obj";
     let oxygenPath = paths.assets + "/O/nucleusO.obj";
 
-    assets.electron = await getAsset(electronPath);
-    assets.carbon = await getAsset(carbonPath);
-    assets.hydrogen = await getAsset(hydrogenPath);
-    assets.helium = await getAsset(heliumPath);
-    assets.oxygen = await getAsset(oxygenPath);
+    assets.electron = await getAsset(electronPath, assets.electron.n_el);
+    assets.carbon = await getAsset(carbonPath, assets.carbon.n_el);
+    assets.hydrogen = await getAsset(hydrogenPath, assets.hydrogen.n_el);
+    assets.helium = await getAsset(heliumPath, assets.helium.n_el);
+    assets.oxygen = await getAsset(oxygenPath, assets.oxygen.n_el);
 }
 
 function loadAttribAndUniformsLocations() {
@@ -136,7 +121,7 @@ async function init() {
 
     await loadAssets();
     loadTexture();
-    loadSceneObjects();
+    setAtom(assets.hydrogen);
 
     main();
 }
@@ -146,6 +131,39 @@ function resize() {
     calculateMatrices();
 }
 
+function keyFunction(e){
+    let prev; let next;
+
+    switch (atom) {
+        case assets.hydrogen:
+            prev = null;
+            next = assets.helium;
+            break;
+        case assets.helium:
+            prev = assets.hydrogen;
+            next = assets.carbon;
+            break;
+        case assets.carbon:
+            prev = assets.helium;
+            next = assets.oxygen;
+            break;
+        case assets.oxygen:
+            prev = assets.carbon;
+            next = null;
+            break;
+    }
+
+    if (e.keyCode == 38) {  // Up arrow
+        if (prev) setAtom(prev);
+    }
+    if (e.keyCode == 40) {  // Down arrow
+        if (next) setAtom(next);
+    }
+
+
+}
+
 window.onload = init;
 window.onresize = resize;
+window.addEventListener("keyup", keyFunction, false);
 
