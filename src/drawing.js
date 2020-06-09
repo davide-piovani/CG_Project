@@ -5,7 +5,34 @@ function loadSceneObjects() {
     obj1.setParams({x: -1.3, z: -1.0, s: 0.15, asset: assets.electron});
     let obj2 = new SceneObject();
     obj2.setParams({x: 0.0, z: -1.0, s: 0.2, asset: assets.carbon});
-    sceneObjects.push(obj1, obj2);
+    let obj3 = new SceneObject();
+    obj3.setParams({x: 0.5, z: -1.0, s: 0.2, asset: assets.hydrogen});
+    let obj4 = new SceneObject();
+    obj4.setParams({x: 1.0, z: -1.0, s: 0.2, asset: assets.helium});
+    let obj5 = new SceneObject();
+    obj5.setParams({x: 0.5, z: -1.0, y: -1.0, s: 0.2, asset: assets.oxygen});
+    sceneObjects.push(obj1, obj2, obj3, obj4, obj5);
+}
+
+function addObjectToScene(params)
+{
+    let obj = new SceneObject();
+    obj.setParams(params);
+    sceneObjects.push(obj);
+}
+
+function setAtom(asset)
+{
+    sceneObjects = [];
+    let nucleus = new SceneObject();
+    switch(asset)
+    {
+        case assets.carbon:
+            for(let i=0; i<8; i++) addObjectToScene({})
+
+
+
+    }
 }
 
 async function getAsset(path) {
@@ -54,7 +81,7 @@ function passAssetsDataToShaders(asset) {
 
 function animate(){
     let currentTime = (new Date).getTime();
-    
+
     for(let i = 0; i < sceneObjects.length; i++) {
         let sign = (i % 2 === 0) ? 1 : -1;
 
@@ -65,7 +92,7 @@ function animate(){
             sceneObjects[i].rz += deltaC;
         }
     }
-    
+
     lastUpdateTime = currentTime;
 }
 
