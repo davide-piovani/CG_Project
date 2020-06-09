@@ -96,31 +96,20 @@ createProgram:function(gl, vertexShader, fragmentShader) {
 
 	*/
 
-	loadFile: function (url, data, callback, errorCallback) {
-		// Set up an synchronous request! Important!
-		var request = new XMLHttpRequest();
-		request.open('GET', url, false);
-
-		// Hook the event that gets called as the request progresses
-		request.onreadystatechange = function () {
-			// If the request is "DONE" (completed or failed) and if we got HTTP status 200 (OK)
-
-
-			if (request.readyState == 4 && request.status == 200) {
-					callback(request.responseText, data)
-				//} else { // Failed
-				//	errorCallback(url);
-			}
-
-		};
-
-		request.send(null);
+	loadFile:async function(url, data, callback, errorCallBack){
+		var response = await fetch(url);
+		if (!response.ok) {
+			alert('Network response was not ok');
+			return;
+		}
+		var text = await response.text();
+		callback(text, data);
 	},
 
-	loadFiles: function (urls, callback, errorCallback) {
-    var numUrls = urls.length;
-    var numComplete = 0;
-    var result = [];
+	loadFiles:async function (urls, callback, errorCallback) {
+		var numUrls = urls.length;
+		var numComplete = 0;
+		var result = [];
 
 		// Callback for a single file
 		function partialCallback(text, urlIndex) {
@@ -134,7 +123,7 @@ createProgram:function(gl, vertexShader, fragmentShader) {
 		}
 
 		for (var i = 0; i < numUrls; i++) {
-			this.loadFile(urls[i], i, partialCallback, errorCallback);
+			await this.loadFile(urls[i], i, partialCallback, errorCallback);
 		}
 	},
 

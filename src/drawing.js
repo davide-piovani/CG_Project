@@ -2,9 +2,9 @@ let lastUpdateTime;     //Todo: delete
 
 function loadSceneObjects() {
     let obj1 = new SceneObject();
-    obj1.setParams({x: -1.0, z: -1.0})
+    obj1.setParams({x: -1.3, z: -1.0, s: 0.15, asset: assets.electron});
     let obj2 = new SceneObject();
-    obj2.setParams({x: +1.0, z: -1.0});
+    obj2.setParams({x: 0.0, z: -1.0, s: 0.2, asset: assets.carbon});
     sceneObjects.push(obj1, obj2);
 }
 
@@ -32,12 +32,6 @@ async function loadAssets() {
     assets.hydrogen = await getAsset(hydrogenPath);
     assets.helium = await getAsset(heliumPath);
     assets.oxygen = await getAsset(oxygenPath);
-
-    console.log(assets.electron);
-    console.log(assets.carbon);
-    console.log(assets.hydrogen);
-    console.log(assets.helium);
-    console.log(assets.oxygen);
 }
 
 function loadAttribAndUniformsLocations() {
@@ -52,10 +46,10 @@ function calculateMatrices() {
     matrices.viewMatrix = utils.MakeView(camera.x, camera.y, camera.z, camera.elev, camera.angle);
 }
 
-function passAssetsDataToShaders() {
-    loadArrayBuffer(new Float32Array(assets.electron.vertices), locations.positionAttributeLocation, 3);
-    loadArrayBuffer(new Float32Array(assets.electron.textures), locations.uvAttributeLocation, 2);
-    loadIndexBuffer(new Uint16Array(assets.electron.indices));
+function passAssetsDataToShaders(asset) {
+    loadArrayBuffer(new Float32Array(asset.vertices), locations.positionAttributeLocation, 3);
+    loadArrayBuffer(new Float32Array(asset.textures), locations.uvAttributeLocation, 2);
+    loadIndexBuffer(new Uint16Array(asset.indices));
 }
 
 function animate(){
@@ -76,7 +70,7 @@ function animate(){
 }
 
 function drawScene() {
-    animate();
+    //animate();
 
     eraseCanvas();
 
@@ -84,13 +78,15 @@ function drawScene() {
         let worldViewMatrix = utils.multiplyMatrices(matrices.viewMatrix, sceneObject.getWorldMatrix());
         let wvpMatrix = utils.multiplyMatrices(matrices.projectionMatrix, worldViewMatrix);
 
+        passAssetsDataToShaders(sceneObject.asset);
+
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
         gl.activeTexture(gl.TEXTURE0);
         gl.uniform1i(locations.textureLocation, assets.texture);
 
         gl.bindVertexArray(vao);
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0 );
+        gl.drawElements(gl.TRIANGLES, sceneObject.asset.indices.length, gl.UNSIGNED_SHORT, 0 );
     })
 
     window.requestAnimationFrame(drawScene);
@@ -102,7 +98,6 @@ function main() {
 
     vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
-    passAssetsDataToShaders();
 
     drawScene();
 }
