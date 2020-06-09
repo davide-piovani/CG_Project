@@ -30,3 +30,12 @@ let locations = {
     colorAttributeLocation: null,
     wvpMatrixLocation: null
 }
+
+let assets = {
+    electron: {
+        vertices: null,
+        normals: null,
+        indices: null,
+        textures: null
+    }
+}

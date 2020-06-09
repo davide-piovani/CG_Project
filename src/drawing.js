@@ -8,6 +8,23 @@ function loadSceneObjects() {
     sceneObjects.push(obj1, obj2);
 }
 
+async function loadAssets() {
+    let assetsPath = baseDir+"src/assets";
+    let electronPath = assetsPath + "/electron.obj";
+    console.log(electronPath);
+
+    let electornStr = await utils.get_objstr(electronPath);
+    var electronModel = new OBJ.Mesh(electornStr);
+
+    assets.electron.vertices = electronModel.vertices;
+    assets.electron.normals = electronModel.normals;
+    assets.electron.indices = electronModel.indices;
+    assets.electron.textures = electronModel.textures;
+
+    console.log(assets.electron);
+    console.log("Nuovo");
+}
+
 function loadAttribAndUniformsLocations() {
     locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
     locations.colorAttributeLocation = gl.getAttribLocation(program, "a_color");
@@ -73,25 +90,11 @@ function main() {
 
 async function init() {
     setUpCanvas();
+    getBaseDir();
     await loadProgram(true);
 
     loadSceneObjects();
-
-    let path = window.location.pathname;
-    let page = path.split("/").pop();
-    let baseDir = window.location.href.replace(page, '');
-    let objPath = baseDir+"src/assets/electron.obj";
-    console.log(objPath);
-
-    var objStr = await utils.get_objstr(objPath);
-    var objModel = new OBJ.Mesh(objStr);
-
-    var modelVertices = objModel.vertices;
-    var modelNormals = objModel.normals;
-    var modelIndices = objModel.indices;
-    var modelTexCoords = objModel.textures;
-
-    console.log(modelVertices);
+    await loadAssets();
 
     main();
 }

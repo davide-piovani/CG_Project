@@ -1,3 +1,4 @@
+let baseDir;
 
 function eraseCanvas() {
     gl.clearColor(0, 0, 0, 0);
@@ -20,17 +21,16 @@ function setUpCanvas() {
     gl.enable(gl.DEPTH_TEST);
 }
 
-function getShadersDir(){
+function getBaseDir() {
     let path = window.location.pathname;
     let page = path.split("/").pop();
-    let baseDir = window.location.href.replace(page, '');
-    return baseDir+"src/shaders/";
+    baseDir = window.location.href.replace(page, '');
 }
 
 async function loadProgram(xamppActive) {
     if (!xamppActive) { loadWithoutXampp(); return; }
 
-    let shaderDir = getShadersDir();
+    let shaderDir = baseDir+"src/shaders/";
     let vs_path = shaderDir + 'vertexShader.glsl';
     let fs_path = shaderDir + 'fragmentShader.glsl';
 
