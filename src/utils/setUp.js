@@ -1,5 +1,3 @@
-let baseDir;
-
 function eraseCanvas() {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -21,18 +19,19 @@ function setUpCanvas() {
     gl.enable(gl.DEPTH_TEST);
 }
 
-function getBaseDir() {
+function initializePaths() {
     let path = window.location.pathname;
     let page = path.split("/").pop();
-    baseDir = window.location.href.replace(page, '');
+
+    paths.base = window.location.href.replace(page, '');
+    paths.shaders = paths.base + paths.shaders;
+    paths.assets = paths.base + paths.assets;
+    paths.texture = paths.base + paths.texture;
 }
 
-async function loadProgram(xamppActive) {
-    if (!xamppActive) { loadWithoutXampp(); return; }
-
-    let shaderDir = baseDir+"src/shaders/";
-    let vs_path = shaderDir + 'vertexShader.glsl';
-    let fs_path = shaderDir + 'fragmentShader.glsl';
+async function loadProgram() {
+    let vs_path = paths.shaders + '/vertexShader.glsl';
+    let fs_path = paths.shaders + '/fragmentShader.glsl';
 
     await utils.loadFiles([vs_path, fs_path], function (shaderText) {
         let vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
@@ -42,12 +41,20 @@ async function loadProgram(xamppActive) {
     gl.useProgram(program);
 }
 
-//Just for testing
-function loadWithoutXampp() {
-    let vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, vs);
-    let fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, fs);
-    program = utils.createProgram(gl, vertexShader, fragmentShader);
-    gl.useProgram(program);
+function loadTexture() {
+    assets.texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, assets.texture);
+
+    let image = new Image();
+    image.src = paths.texture;
+    image.onload= function() {
+        gl.bindTexture(gl.TEXTURE_2D, assets.texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.generateMipmap(gl.TEXTURE_2D);
+    };
 }
 
 function loadArrayBuffer(data, location, size) {

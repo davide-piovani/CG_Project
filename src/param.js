@@ -1,7 +1,6 @@
 let gl;
 let program;
 let vao;
-let texture;
 
 let a;
 let n = 0.1;
@@ -11,6 +10,13 @@ let w = 3;              //only if we use parallel projection
 let fieldOfView = 90;   //only if we use perspective projection
 
 let sceneObjects = [];
+
+let paths = {
+    base: "",
+    assets: "src/assets",
+    shaders: "src/shaders",
+    texture: "src/assets/texture.png"
+}
 
 let camera = {
     x: 0.0,
@@ -29,7 +35,6 @@ let matrices = {
 let locations = {
     positionAttributeLocation: null,
     uvAttributeLocation: null,
-    colorAttributeLocation: null,
     wvpMatrixLocation: null,
     textureLocation: null
 }
@@ -64,5 +69,6 @@ let assets = {
         normals: null,
         indices: null,
         textures: null
-    }
+    },
+    texture: null
 }

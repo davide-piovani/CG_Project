@@ -21,25 +21,28 @@ async function getAsset(path) {
 }
 
 async function loadAssets() {
-    let assetsPath = baseDir+"src/assets";
-
-    let electronPath = assetsPath + "/electron.obj";
-    let carbonPath = assetsPath + "/Atoms/C/nucleusC.obj";
-    let hydrogenPath = assetsPath + "/Atoms/H/nucleusH.obj";
-    let heliumPath = assetsPath + "/Atoms/He/nucleusHe.obj";
-    let oxygenPath = assetsPath + "/Atoms/O/nucleusO.obj";
+    let electronPath = paths.assets + "/E/electron.obj";
+    let carbonPath = paths.assets + "/C/nucleusC.obj";
+    let hydrogenPath = paths.assets + "/H/nucleusH.obj";
+    let heliumPath = paths.assets + "/He/nucleusHe.obj";
+    let oxygenPath = paths.assets + "/O/nucleusO.obj";
 
     assets.electron = await getAsset(electronPath);
     assets.carbon = await getAsset(carbonPath);
     assets.hydrogen = await getAsset(hydrogenPath);
     assets.helium = await getAsset(heliumPath);
     assets.oxygen = await getAsset(oxygenPath);
+
+    console.log(assets.electron);
+    console.log(assets.carbon);
+    console.log(assets.hydrogen);
+    console.log(assets.helium);
+    console.log(assets.oxygen);
 }
 
 function loadAttribAndUniformsLocations() {
     locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
     locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
-    //locations.colorAttributeLocation = gl.getAttribLocation(program, "a_color");
     locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
     locations.textureLocation = gl.getUniformLocation(program, "u_texture");
 }
@@ -52,7 +55,6 @@ function calculateMatrices() {
 function passAssetsDataToShaders() {
     loadArrayBuffer(new Float32Array(assets.electron.vertices), locations.positionAttributeLocation, 3);
     loadArrayBuffer(new Float32Array(assets.electron.textures), locations.uvAttributeLocation, 2);
-    //loadArrayBuffer(new Float32Array(assets.electron.textures), locations.colorAttributeLocation, 3);
     loadIndexBuffer(new Uint16Array(assets.electron.indices));
 }
 
@@ -85,7 +87,7 @@ function drawScene() {
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.uniform1i(locations.textureLocation, texture);
+        gl.uniform1i(locations.textureLocation, assets.texture);
 
         gl.bindVertexArray(vao);
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0 );
@@ -102,30 +104,17 @@ function main() {
     gl.bindVertexArray(vao);
     passAssetsDataToShaders();
 
-    texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    let image = new Image();
-    image.src = baseDir+"src/assets/texture.png";
-    image.onload= function() {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.generateMipmap(gl.TEXTURE_2D);
-    };
-
     drawScene();
 }
 
 async function init() {
     setUpCanvas();
-    getBaseDir();
-    await loadProgram(true);
+    initializePaths();
+    await loadProgram();
 
-    loadSceneObjects();
     await loadAssets();
+    loadTexture();
+    loadSceneObjects();
 
     main();
 }
