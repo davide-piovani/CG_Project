@@ -1,4 +1,6 @@
-let lastUpdateTime;     //Todo: delete
+let lastUpdateTime;
+let lastAsset;
+let startTime = (new Date).getTime();
 
 function addObjectToScene(params) {
     let obj = new SceneObject();
@@ -10,16 +12,15 @@ function setAtom(asset) {
     atom = asset;
     sceneObjects = [];
 
-    addObjectToScene({x: 0.0, z: -1.0, s: nucleous_scale, asset: asset});
-    let partialAngle = 2 * Math.PI / asset.n_el;
+    addObjectToScene({x: asset.center.x, y: asset.center.y, s: nucleous_scale, asset: asset});
 
     for(let i = 0; i < asset.n_el; i++) {
-        addObjectToScene({x: Math.cos(partialAngle*i), y: Math.sin(partialAngle*i), z: -1.0, s: e_scale, asset: assets.electron});
+        let animation = new AtomAnimation(1.0, trajectories[i]);
+        addObjectToScene({s: e_scale, asset: assets.electron, animation: animation});
     }
-
 }
 
-async function getAsset(path, n) {
+async function getAsset(path, asset) {
     let objStr = await utils.get_objstr(path);
     let objModel = new OBJ.Mesh(objStr);
 
@@ -28,7 +29,8 @@ async function getAsset(path, n) {
         normals: objModel.vertexNormals,
         indices: objModel.indices,
         textures: objModel.textures,
-        n_el: n
+        n_el: asset.n_el,
+        center: asset.center
     }
 }
 
@@ -39,11 +41,11 @@ async function loadAssets() {
     let heliumPath = paths.assets + "/He/nucleusHe.obj";
     let oxygenPath = paths.assets + "/O/nucleusO.obj";
 
-    assets.electron = await getAsset(electronPath, assets.electron.n_el);
-    assets.carbon = await getAsset(carbonPath, assets.carbon.n_el);
-    assets.hydrogen = await getAsset(hydrogenPath, assets.hydrogen.n_el);
-    assets.helium = await getAsset(heliumPath, assets.helium.n_el);
-    assets.oxygen = await getAsset(oxygenPath, assets.oxygen.n_el);
+    assets.electron = await getAsset(electronPath, assets.electron);
+    assets.carbon = await getAsset(carbonPath, assets.carbon);
+    assets.hydrogen = await getAsset(hydrogenPath, assets.hydrogen);
+    assets.helium = await getAsset(heliumPath, assets.helium);
+    assets.oxygen = await getAsset(oxygenPath, assets.oxygen);
 }
 
 function loadAttribAndUniformsLocations() {
@@ -59,6 +61,8 @@ function calculateMatrices() {
 }
 
 function passAssetsDataToShaders(asset) {
+    if (lastAsset === asset) return;
+    lastAsset = asset;
     loadArrayBuffer(new Float32Array(asset.vertices), locations.positionAttributeLocation, 3);
     loadArrayBuffer(new Float32Array(asset.textures), locations.uvAttributeLocation, 2);
     loadIndexBuffer(new Uint16Array(asset.indices));
@@ -66,23 +70,20 @@ function passAssetsDataToShaders(asset) {
 
 function animate(){
     let currentTime = (new Date).getTime();
+    let elapsedTime = currentTime - startTime;
 
-    for(let i = 0; i < sceneObjects.length; i++) {
-        let sign = (i % 2 === 0) ? 1 : -1;
-
-        if(lastUpdateTime){
-            let deltaC = sign * (30 * (currentTime - lastUpdateTime)) / 1000.0;
-            sceneObjects[i].rx += deltaC;
-            sceneObjects[i].ry -= deltaC;
-            sceneObjects[i].rz += deltaC;
+    sceneObjects.forEach((sceneObject) => {
+        if (sceneObject.animation != null) {
+            let params = sceneObject.animation.getPosAtTime(elapsedTime);
+            sceneObject.setParams(params);
         }
-    }
+    })
 
     lastUpdateTime = currentTime;
 }
 
 function drawScene() {
-    //animate();
+    animate();
 
     eraseCanvas();
 
