@@ -1,6 +1,7 @@
-let lastUpdateTime;
-let lastAsset;
+let lastAssetType;
 let startTime = (new Date).getTime();
+let mouseClicked = false;
+let commandClicked = false;
 
 function addObjectToScene(params) {
     let obj = new SceneObject();
@@ -8,19 +9,22 @@ function addObjectToScene(params) {
     sceneObjects.push(obj);
 }
 
-function setAtom(asset) {
-    atom = asset;
+function setAtom(assetType) {
     sceneObjects = [];
 
-    addObjectToScene({x: asset.center.x, y: asset.center.y, s: nucleous_scale, asset: asset});
+    let asset = assets[assetType];
+
+    addObjectToScene({assetType: assetType});
+    let atom = sceneObjects[0];
+    addObjectToScene({assetType: AssetType.FLOOR, parent: atom});
 
     for(let i = 0; i < asset.n_el; i++) {
-        let animation = new AtomAnimation(1.0, trajectories[i]);
-        addObjectToScene({s: e_scale, asset: assets.electron, animation: animation});
+        let animation = new AtomAnimation(asset.orbit[i], trajectories[i]);
+        addObjectToScene({assetType: AssetType.ELECTRON, animation: animation, parent: atom});
     }
 }
 
-async function getAsset(path, asset) {
+async function getAsset(path) {
     let objStr = await utils.get_objstr(path);
     let objModel = new OBJ.Mesh(objStr);
 
@@ -28,9 +32,7 @@ async function getAsset(path, asset) {
         vertices: objModel.vertices,
         normals: objModel.vertexNormals,
         indices: objModel.indices,
-        textures: objModel.textures,
-        n_el: asset.n_el,
-        center: asset.center
+        textures: objModel.textures
     }
 }
 
@@ -41,11 +43,11 @@ async function loadAssets() {
     let heliumPath = paths.assets + "/He/nucleusHe.obj";
     let oxygenPath = paths.assets + "/O/nucleusO.obj";
 
-    assets.electron = await getAsset(electronPath, assets.electron);
-    assets.carbon = await getAsset(carbonPath, assets.carbon);
-    assets.hydrogen = await getAsset(hydrogenPath, assets.hydrogen);
-    assets.helium = await getAsset(heliumPath, assets.helium);
-    assets.oxygen = await getAsset(oxygenPath, assets.oxygen);
+    assets[AssetType.ELECTRON].assetInfo = await getAsset(electronPath);
+    assets[AssetType.HYDROGEN].assetInfo = await getAsset(hydrogenPath);
+    assets[AssetType.HELIUM].assetInfo = await getAsset(heliumPath);
+    assets[AssetType.CARBON].assetInfo = await getAsset(carbonPath);
+    assets[AssetType.OXYGEN].assetInfo = await getAsset(oxygenPath);
 }
 
 function loadAttribAndUniformsLocations() {
@@ -57,15 +59,16 @@ function loadAttribAndUniformsLocations() {
 
 function calculateMatrices() {
     matrices.projectionMatrix = utils.MakePerspective(fieldOfView, a, n, f);
-    matrices.viewMatrix = utils.MakeView(camera.x, camera.y, camera.z, camera.elev, camera.angle);
+    matrices.viewMatrix = camera.getViewMatrix();
 }
 
-function passAssetsDataToShaders(asset) {
-    if (lastAsset === asset) return;
-    lastAsset = asset;
-    loadArrayBuffer(new Float32Array(asset.vertices), locations.positionAttributeLocation, 3);
-    loadArrayBuffer(new Float32Array(asset.textures), locations.uvAttributeLocation, 2);
-    loadIndexBuffer(new Uint16Array(asset.indices));
+function passAssetsDataToShaders(assetType) {
+    if (lastAssetType === assetType) return;
+    lastAssetType = assetType;
+    let assetInfo = assets[assetType].assetInfo;
+    loadArrayBuffer(new Float32Array(assetInfo.vertices), locations.positionAttributeLocation, 3);
+    loadArrayBuffer(new Float32Array(assetInfo.textures), locations.uvAttributeLocation, 2);
+    loadIndexBuffer(new Uint16Array(assetInfo.indices));
 }
 
 function animate(){
@@ -75,11 +78,9 @@ function animate(){
     sceneObjects.forEach((sceneObject) => {
         if (sceneObject.animation != null) {
             let params = sceneObject.animation.getPosAtTime(elapsedTime);
-            sceneObject.setParams(params);
+            sceneObject.setParams({geometry: params});
         }
     })
-
-    lastUpdateTime = currentTime;
 }
 
 function drawScene() {
@@ -88,18 +89,20 @@ function drawScene() {
     eraseCanvas();
 
     sceneObjects.forEach((sceneObject) => {
-        let worldViewMatrix = utils.multiplyMatrices(matrices.viewMatrix, sceneObject.getWorldMatrix());
+        let worldMatrix = sceneObject.getWorldMatrix();
+        if (sceneObject.parent != null) worldMatrix = utils.multiplyMatrices(sceneObject.parent.getWorldMatrix(), worldMatrix);
+        let worldViewMatrix = utils.multiplyMatrices(matrices.viewMatrix, worldMatrix);
         let wvpMatrix = utils.multiplyMatrices(matrices.projectionMatrix, worldViewMatrix);
 
-        passAssetsDataToShaders(sceneObject.asset);
+        passAssetsDataToShaders(sceneObject.assetType);
 
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.uniform1i(locations.textureLocation, assets.texture);
+        gl.uniform1i(locations.textureLocation, assets[AssetType.TEXTURE]);
 
         gl.bindVertexArray(vao);
-        gl.drawElements(gl.TRIANGLES, sceneObject.asset.indices.length, gl.UNSIGNED_SHORT, 0 );
+        gl.drawElements(gl.TRIANGLES, assets[sceneObject.assetType].assetInfo.indices.length, gl.UNSIGNED_SHORT, 0 );
     })
 
     window.requestAnimationFrame(drawScene);
@@ -122,7 +125,7 @@ async function init() {
 
     await loadAssets();
     loadTexture();
-    setAtom(assets.hydrogen);
+    setAtom(AssetType.HYDROGEN);
 
     main();
 }
@@ -132,39 +135,70 @@ function resize() {
     calculateMatrices();
 }
 
-function keyFunction(e){
-    let prev; let next;
+function keyDown(e) {
+    if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
+        commandClicked = true;
+    }
+}
 
-    switch (atom) {
-        case assets.hydrogen:
-            prev = null;
-            next = assets.helium;
-            break;
-        case assets.helium:
-            prev = assets.hydrogen;
-            next = assets.carbon;
-            break;
-        case assets.carbon:
-            prev = assets.helium;
-            next = assets.oxygen;
-            break;
-        case assets.oxygen:
-            prev = assets.carbon;
-            next = null;
-            break;
+function keyUp(e){
+    if (e.keyCode === 38 || e.keyCode === 37) {  // Up or Left arrow
+        let actual = sceneObjects[0].assetType;
+        if (actual > AssetType.HYDROGEN) setAtom(actual-1);
+    }
+    if (e.keyCode === 40 || e.keyCode === 39) {  // Down or Right arrow
+        let actual = sceneObjects[0].assetType;
+        if (actual < AssetType.OXYGEN) setAtom(actual+1);
     }
 
-    if (e.keyCode == 38) {  // Up arrow
-        if (prev) setAtom(prev);
+    if (e.keyCode === 87) {  // w
+        camera.moveForward(1.0);
+        calculateMatrices();
     }
-    if (e.keyCode == 40) {  // Down arrow
-        if (next) setAtom(next);
+    if (e.keyCode === 83) {  // s
+        camera.moveBack(1.0);
+        calculateMatrices();
     }
 
+    if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
+        commandClicked = false;
+    }
 
+    if (e.keyCode === 88) {  // z
+        camera.viewFromX();
+        calculateMatrices();
+    }
+
+    if (e.keyCode === 89) {  // z
+        camera.viewFromY();
+        calculateMatrices();
+    }
+
+    if (e.keyCode === 90) {  // z
+        camera.viewFromZ();
+        calculateMatrices();
+    }
+
+}
+
+function mouseMove(e) {
+    if (mouseClicked) {
+        let obj = sceneObjects[0];
+        if (commandClicked) {
+            obj.x += e.movementX/100;
+            obj.y -= e.movementY/100;
+        } else {
+            obj.rx += e.movementX;
+            obj.ry += e.movementY;
+        }
+    }
 }
 
 window.onload = init;
 window.onresize = resize;
-window.addEventListener("keyup", keyFunction, false);
+window.addEventListener("keydown", keyDown, false);
+window.addEventListener("keyup", keyUp, false);
+window.onmousedown = () => {mouseClicked = true};
+window.onmouseup = () => {mouseClicked = false};
+window.onmousemove = mouseMove;
 

@@ -1,13 +1,13 @@
 class AtomAnimation {
-    radious; calculatePos;
+    radius; calculatePos;
 
     constructor(r, func) {
-        this.radious = r;
+        this.radius = r;
         this.calculatePos = func;
     }
 
     getPosAtTime = (t) => {
         let perc = electron_velocity * t / 1000;
-        return this.calculatePos(perc, this.radious);
+        return this.calculatePos(perc, this.radius);
     }
 }
