@@ -16,6 +16,15 @@
             }
         </style>
 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+
+        <!-- Styles -->
+        <link href="src/pushy-buttons/css/pushy-buttons.css" rel="stylesheet">
+
+        <!-- Test -->
+        <link href="src/pushy-buttons/css/style.css" rel="stylesheet">
+
         <script type="text/javascript" src="src/utils/webgl-obj-loader.min.js"></script>
         <script type="text/javascript" src="src/utils/utils.js"></script>
         <script type="text/javascript" src="src/class/AssetType.js"></script>
@@ -27,7 +36,22 @@
     </head>
 
     <body>
-        <canvas id="canvas"></canvas>
+        <div>
+            <div>
+                <a>Element:</a>
+                <button id="H" name="H" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.HYDROGEN)">HYDROGEN</button>
+                <button id="He" name="He" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.HELIUM)">HELIUM</button>
+                <button id="C" name="C" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.CARBON)">CARBON</button>
+                <button id="O" name="O" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.OXYGEN)">OXYGEN</button>
+                <a>Camera:</a>
+                <button id="axis_x" name="axis_x" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setCamera('x')">X</button>
+                <button id="axis_y" name="axis_y" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setCamera('y')">Y</button>
+                <button id="axis_z" name="axis_z" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setCamera('z')">Z</button>
+            </div>
+            
+            <canvas id="canvas" style="z-index: 1" height="100%" width="100%"></canvas>
+        </div>
+
 
         <script type="text/javascript" src="src/utils/set-up.js"></script>
         <script type="text/javascript" src="./src/drawing.js"></script>

@@ -2,11 +2,74 @@ let lastAssetType;
 let startTime = (new Date).getTime();
 let mouseClicked = false;
 let commandClicked = false;
+let buttons;
 
 function addObjectToScene(params) {
     let obj = new SceneObject();
     obj.setParams(params);
     sceneObjects.push(obj);
+}
+
+function buttonController(assetType)
+{
+
+    switch (assetType) {
+        case AssetType.HYDROGEN:
+            buttons.namedItem("H").style.backgroundColor = "red";
+            buttons.namedItem("He").style.backgroundColor = "#1199EE";
+            buttons.namedItem("C").style.backgroundColor = "#1199EE";
+            buttons.namedItem("O").style.backgroundColor = "#1199EE";
+            break;
+        case AssetType.HELIUM:
+            buttons.namedItem("He").style.backgroundColor = "red";
+            buttons.namedItem("C").style.backgroundColor = "#1199EE";
+            buttons.namedItem("O").style.backgroundColor = "#1199EE";
+            buttons.namedItem("H").style.backgroundColor = "#1199EE";
+            break;
+        case AssetType.CARBON:
+            buttons.namedItem("C").style.backgroundColor = "red";
+            buttons.namedItem("O").style.backgroundColor = "#1199EE";
+            buttons.namedItem("H").style.backgroundColor = "#1199EE";
+            buttons.namedItem("He").style.backgroundColor = "#1199EE";
+            break;
+        case AssetType.OXYGEN:
+            buttons.namedItem("O").style.backgroundColor = "red";
+            buttons.namedItem("He").style.backgroundColor = "#1199EE";
+            buttons.namedItem("C").style.backgroundColor = "#1199EE";
+            buttons.namedItem("H").style.backgroundColor = "#1199EE";
+            break;
+    }
+
+    setAtom(assetType);
+
+}
+
+function setCamera(code)
+{
+    switch (code)
+    {
+        default: case 'x':
+            camera.viewFromX();
+            calculateMatrices();
+            buttons.namedItem("axis_x").style.backgroundColor = "red";
+            buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_z").style.backgroundColor = "#1199EE";
+            break;
+        case 'y':
+            camera.viewFromY();
+            calculateMatrices();
+            buttons.namedItem("axis_x").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_y").style.backgroundColor = "red";
+            buttons.namedItem("axis_z").style.backgroundColor = "#1199EE";
+            break;
+        case 'z':
+            camera.viewFromZ();
+            calculateMatrices();
+            buttons.namedItem("axis_x").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_z").style.backgroundColor = "red";
+            break;
+    }
 }
 
 function setAtom(assetType) {
@@ -118,14 +181,26 @@ function main() {
     drawScene();
 }
 
+function setUpUI() {
+    buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
+    buttons.namedItem("H").style.backgroundColor = "red";
+    buttons.namedItem("axis_z").style.backgroundColor = "red";
+}
+
 async function init() {
+
+    setUpUI();
+
     setUpCanvas();
+
     initializePaths();
     await loadProgram();
 
     await loadAssets();
     loadTexture();
+
     setAtom(AssetType.HYDROGEN);
+
 
     main();
 }
