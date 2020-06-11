@@ -1,4 +1,4 @@
-class AtomAnimation {
+class ElectronAnimation {
     radius; calculatePos;
 
     constructor(r, func) {

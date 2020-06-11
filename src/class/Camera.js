@@ -2,10 +2,11 @@ class Camera {
     x = 0.0; y = 0.0; z = 2.0;
     elev = 0.0;         //rotation over the x-axis
     angle = 0.0;        //rotation over the y-axis
-    mode = 0;           //0: viewFromX, 1: viewFromY, 2: viewFromZ
+    mode = 2;           //0: viewFromX, 1: viewFromY, 2: viewFromZ
+    viewMatrix = utils.MakeView(this.x, this.y, this.z, this.elev, this.angle);
 
-    getViewMatrix = () => {
-        return utils.MakeView(this.x, this.y, this.z, this.elev, this.angle);
+    updateViewMatrix = () => {
+        this.viewMatrix = utils.MakeView(this.x, this.y, this.z, this.elev, this.angle);
     }
 
     viewFromX = () => {
@@ -15,6 +16,7 @@ class Camera {
         this.elev = 0.0;
         this.angle = 90.0;
         this.mode = 0;
+        this.updateViewMatrix();
     }
 
     viewFromY = () => {
@@ -24,6 +26,7 @@ class Camera {
         this.elev = -90.0;
         this.angle = 0.0;
         this.mode = 1;
+        this.updateViewMatrix();
     }
 
     viewFromZ = () => {
@@ -33,6 +36,7 @@ class Camera {
         this.elev = 0.0;
         this.angle = 0.0;
         this.mode = 2;
+        this.updateViewMatrix();
     }
 
     moveBack = (amount) => {
@@ -47,6 +51,7 @@ class Camera {
                 camera.z += amount;
                 break;
         }
+        this.updateViewMatrix();
     }
 
     moveForward = (amount) => {
@@ -61,5 +66,6 @@ class Camera {
                 camera.z -= amount;
                 break;
         }
+        this.updateViewMatrix();
     }
 }
