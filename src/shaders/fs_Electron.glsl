@@ -2,10 +2,12 @@
 
 precision mediump float;
 
-in vec2 uvFS;
+uniform vec4 difColor;
+
 out vec4 outColor;
-uniform sampler2D u_texture;
 
 void main() {
-    outColor = texture(u_texture, uvFS);
+    float perc = 1.0;
+    vec4 contribution = vec4(perc, perc, perc, 1.0);
+    outColor = clamp(difColor * contribution, 0.0, 1.0);
 }

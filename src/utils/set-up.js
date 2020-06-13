@@ -1,5 +1,5 @@
 function eraseCanvas() {
-    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
@@ -105,26 +105,46 @@ function loadTexture() {
     gl.activeTexture(gl.TEXTURE0);
 }
 
-function applyToAll(func) {
-    func(AssetType.ELECTRON);
-    func(AssetType.HYDROGEN);
-    func(AssetType.HELIUM);
-    func(AssetType.CARBON);
-    func(AssetType.OXYGEN);
-    func(AssetType.FLOOR);
+function loadAtomAttribAndUniformsLocations() {
+    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+
+    for(let assetType of types){
+        let program = assetsData[assetType].drawInfo.program;
+
+        assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+        assetsData[assetType].drawInfo.locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
+        assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
+        assetsData[assetType].drawInfo.locations.textureLocation = gl.getUniformLocation(program, "u_texture");
+
+        assetsData[assetType].drawInfo.locations.lightColorLocation = gl.getUniformLocation(program, "light_color");
+        assetsData[assetType].drawInfo.locations.lightPositionLocation = gl.getUniformLocation(program, "light_pos");
+        assetsData[assetType].drawInfo.locations.lightTargetLocation = gl.getUniformLocation(program, "light_g");
+        assetsData[assetType].drawInfo.locations.lightDecayLocation = gl.getUniformLocation(program, "light_decay");
+    }
 }
 
-function loadAtts(assetType) {
+function loadElectronAttribAndUniformsLocations() {
+    let assetType = AssetType.ELECTRON;
     let program = assetsData[assetType].drawInfo.program;
 
     assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    assetsData[assetType].drawInfo.locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
     assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
-    assetsData[assetType].drawInfo.locations.textureLocation = gl.getUniformLocation(program, "u_texture");
+    assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
+}
+
+function loadFloorAttribAndUniformsLocations() {
+    let assetType = AssetType.FLOOR;
+    let program = assetsData[assetType].drawInfo.program;
+
+    assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
+    assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
 }
 
 function loadAttribAndUniformsLocations() {
-    applyToAll(loadAtts);
+    loadAtomAttribAndUniformsLocations();
+    loadElectronAttribAndUniformsLocations();
+    loadFloorAttribAndUniformsLocations();
 }
 
 function loadArrayBuffer(data, location, size) {
@@ -150,7 +170,7 @@ function loadVao(assetType) {
     let locations = asset.drawInfo.locations;
 
     loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation, 3);
-    loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation, 2);
+    if (assetType !== AssetType.FLOOR && assetType !== AssetType.ELECTRON) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation, 2);
     loadIndexBuffer(new Uint16Array(structInfo.indices));
 
     assetsData[assetType].drawInfo.bufferLength = assetsData[assetType].structInfo.indices.length;
@@ -159,4 +179,13 @@ function loadVao(assetType) {
 
 function loadVaos() {
     applyToAll(loadVao);
+}
+
+function applyToAll(func) {     //TODO: delete
+    func(AssetType.ELECTRON);
+    func(AssetType.HYDROGEN);
+    func(AssetType.HELIUM);
+    func(AssetType.CARBON);
+    func(AssetType.OXYGEN);
+    func(AssetType.FLOOR);
 }

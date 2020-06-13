@@ -12,6 +12,8 @@ let fieldOfView = 90;   //only if we use perspective projection
 let electron_velocity = 0.3;
 
 let objectsToRender = [];
+let nodesToAnimate = [];
+let light = new SceneNode();
 let camera = new Camera();
 
 let paths = {

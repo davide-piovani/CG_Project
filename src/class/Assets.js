@@ -5,11 +5,11 @@ let AssetType = {
     HELIUM: 3,
     CARBON: 4,
     OXYGEN: 5,
-    FLOOR: 6
+    FLOOR: 6,
+    LIGHT: 7
 }
 
 let r = 1.0;
-let color = 2.0;
 
 let assetsData = [
     {
@@ -27,7 +27,6 @@ let assetsData = [
             vertices: null,
             normals: null,
             indices: null,
-            textures: null,
         },
         drawInfo: {
             program: null,
@@ -35,10 +34,10 @@ let assetsData = [
             vao: null,
             locations: {
                 positionAttributeLocation: null,
-                uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
-            }
+                difColorLocation: null
+            },
+            diffuseColor: [0.97, 0.89, 0.05, 1.0]
         }
     },
 
@@ -62,7 +61,11 @@ let assetsData = [
                 positionAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
+                textureLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+                lightTargetLocation: null,
+                lightDecayLocation: null,
             }
         },
         other: {
@@ -91,7 +94,11 @@ let assetsData = [
                 positionAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
+                textureLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+                lightTargetLocation: null,
+                lightDecayLocation: null,
             }
         },
         other: {
@@ -122,7 +129,11 @@ let assetsData = [
                 positionAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
+                textureLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+                lightTargetLocation: null,
+                lightDecayLocation: null,
             }
         },
         other: {
@@ -153,7 +164,11 @@ let assetsData = [
                 positionAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
+                textureLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+                lightTargetLocation: null,
+                lightDecayLocation: null,
             }
         },
         other: {
@@ -173,7 +188,6 @@ let assetsData = [
             vertices: [-0.1, 0, -0.1, -0.1, 0, +0.1, +0.1, 0, -0.1, +0.1, 0, +0.1],
             normals: null,
             indices: [0, 1, 2, 1, 2, 3],
-            textures: [0, color, 0, color, 0, color, 0, color],
         },
         drawInfo: {
             program: null,
@@ -181,10 +195,24 @@ let assetsData = [
             vao: null,
             locations: {
                 positionAttributeLocation: null,
-                uvAttributeLocation: null,
                 wvpMatrixLocation: null,
-                textureLocation: null
-            }
+                difColorLocation: null
+            },
+            diffuseColor: [0.0, 0.24, 1.0, 1.0]
         }
+    },
+
+    {
+        type: AssetType.LIGHT,
+        defaultCords: {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0
+        },
+        color: [0.97, 0.89, 0.05, 1.0],
+        g: 0.3,
+        decay: 1.2
     }
 ]
+
+//color: [0.97, 0.89, 0.05, 1.0]
