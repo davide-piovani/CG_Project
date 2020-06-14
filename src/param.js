@@ -9,6 +9,8 @@ let f = 100.0;
 let w = 3;              //only if we use parallel projection
 let fieldOfView = 90;   //only if we use perspective projection
 
+let ambientLight = 0.1;
+
 let electron_velocity = 0.3;
 
 let objectsToRender = [];
@@ -24,12 +26,14 @@ let paths = {
         vs: {
             atom: "/vs_Atom.glsl",
             electron: "/vs_Electron.glsl",
-            floor: "/vs_Floor.glsl"
+            floor: "/vs_Floor.glsl",
+            cube: "/vs_Cube.glsl"
         },
         fs: {
             atom: "/fs_Atom.glsl",
             electron: "/fs_Electron.glsl",
-            floor: "/fs_Floor.glsl"
+            floor: "/fs_Floor.glsl",
+            cube: "/fs_Cube.glsl"
         }
     },
     texture: "src/assets/texture.png"

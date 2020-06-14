@@ -32,13 +32,15 @@ function initializePaths() {
     paths.shaders.vs = {
         atom: paths.shaders.base + paths.shaders.vs.atom,
         electron: paths.shaders.base + paths.shaders.vs.electron,
-        floor: paths.shaders.base + paths.shaders.vs.floor
+        floor: paths.shaders.base + paths.shaders.vs.floor,
+        cube: paths.shaders.base + paths.shaders.vs.cube
     }
 
     paths.shaders.fs = {
         atom: paths.shaders.base + paths.shaders.fs.atom,
         electron: paths.shaders.base + paths.shaders.fs.electron,
-        floor: paths.shaders.base + paths.shaders.fs.floor
+        floor: paths.shaders.base + paths.shaders.fs.floor,
+        cube: paths.shaders.base + paths.shaders.fs.cube
     }
 }
 
@@ -59,6 +61,7 @@ async function loadPrograms() {
     assetsData[AssetType.CARBON].drawInfo.program = atomProgram;
     assetsData[AssetType.OXYGEN].drawInfo.program = atomProgram;
     assetsData[AssetType.FLOOR].drawInfo.program = await loadProgram(paths.shaders.vs.floor, paths.shaders.fs.floor);
+    assetsData[AssetType.CUBE].drawInfo.program = await loadProgram(paths.shaders.vs.cube, paths.shaders.fs.cube);
 }
 
 async function getStruct(path) {
@@ -105,46 +108,35 @@ function loadTexture() {
     gl.activeTexture(gl.TEXTURE0);
 }
 
-function loadAtomAttribAndUniformsLocations() {
-    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
 
-    for(let assetType of types){
-        let program = assetsData[assetType].drawInfo.program;
-
-        assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-        assetsData[assetType].drawInfo.locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
-        assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
-        assetsData[assetType].drawInfo.locations.textureLocation = gl.getUniformLocation(program, "u_texture");
-
-        assetsData[assetType].drawInfo.locations.lightColorLocation = gl.getUniformLocation(program, "light_color");
-        assetsData[assetType].drawInfo.locations.lightPositionLocation = gl.getUniformLocation(program, "light_pos");
-        assetsData[assetType].drawInfo.locations.lightTargetLocation = gl.getUniformLocation(program, "light_g");
-        assetsData[assetType].drawInfo.locations.lightDecayLocation = gl.getUniformLocation(program, "light_decay");
-    }
-}
-
-function loadElectronAttribAndUniformsLocations() {
-    let assetType = AssetType.ELECTRON;
+function loadAttribAndUniformsLocationsForAsset(assetType) {
+    if (!assetsData[assetType].hasOwnProperty("drawInfo")) return;
     let program = assetsData[assetType].drawInfo.program;
+    let locations = assetsData[assetType].drawInfo.locations;
 
-    assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
-    assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
-}
+    if (locations.hasOwnProperty("positionAttributeLocation")) assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    if (locations.hasOwnProperty("normalsAttributeLocation")) assetsData[assetType].drawInfo.locations.normalsAttributeLocation = gl.getAttribLocation(program, "a_normal");
+    if (locations.hasOwnProperty("uvAttributeLocation")) assetsData[assetType].drawInfo.locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
+    if (locations.hasOwnProperty("wvpMatrixLocation")) assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
+    if (locations.hasOwnProperty("normalMatrixLocation")) assetsData[assetType].drawInfo.locations.normalMatrixLocation = gl.getUniformLocation(program, "normalMatrix");
+    if (locations.hasOwnProperty("textureLocation")) assetsData[assetType].drawInfo.locations.textureLocation = gl.getUniformLocation(program, "u_texture");
+    if (locations.hasOwnProperty("lightColorLocation")) assetsData[assetType].drawInfo.locations.lightColorLocation = gl.getUniformLocation(program, "light_color");
+    if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation = gl.getUniformLocation(program, "light_pos");
+    if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation = gl.getUniformLocation(program, "light_g");
+    if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation = gl.getUniformLocation(program, "light_decay");
+    if (locations.hasOwnProperty("ambientColorLocation")) assetsData[assetType].drawInfo.locations.ambientColorLocation = gl.getUniformLocation(program, "ambientColor");
+    if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation = gl.getUniformLocation(program, "ambientLight");
+    if (locations.hasOwnProperty("difColorLocation")) assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
+    if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation = gl.getUniformLocation(program, "emitColor");
 
-function loadFloorAttribAndUniformsLocations() {
-    let assetType = AssetType.FLOOR;
-    let program = assetsData[assetType].drawInfo.program;
-
-    assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
-    assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
 }
 
 function loadAttribAndUniformsLocations() {
-    loadAtomAttribAndUniformsLocations();
-    loadElectronAttribAndUniformsLocations();
-    loadFloorAttribAndUniformsLocations();
+    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN, AssetType.FLOOR, AssetType.CUBE];
+
+    for (let assetType of types){
+        loadAttribAndUniformsLocationsForAsset(assetType);
+    }
 }
 
 function loadArrayBuffer(data, location, size) {
@@ -170,7 +162,8 @@ function loadVao(assetType) {
     let locations = asset.drawInfo.locations;
 
     loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation, 3);
-    if (assetType !== AssetType.FLOOR && assetType !== AssetType.ELECTRON) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation, 2);
+    if (locations.hasOwnProperty("normalsAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.normals), locations.normalsAttributeLocation, 3);
+    if (locations.hasOwnProperty("uvAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation, 2);
     loadIndexBuffer(new Uint16Array(structInfo.indices));
 
     assetsData[assetType].drawInfo.bufferLength = assetsData[assetType].structInfo.indices.length;
@@ -188,4 +181,5 @@ function applyToAll(func) {     //TODO: delete
     func(AssetType.CARBON);
     func(AssetType.OXYGEN);
     func(AssetType.FLOOR);
+    func(AssetType.CUBE);
 }

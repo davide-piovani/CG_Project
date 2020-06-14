@@ -2,12 +2,14 @@
 
 precision mediump float;
 
-uniform vec4 difColor;
+in vec3 fs_normal;
+
+uniform vec4 ambientColor;
+uniform vec4 ambientLight;
+uniform vec4 emitColor;
 
 out vec4 outColor;
 
 void main() {
-    float perc = 1.0;
-    vec4 contribution = vec4(perc, perc, perc, 1.0);
-    outColor = clamp(difColor * contribution, 0.0, 1.0);
+    outColor = clamp(ambientColor*ambientLight + emitColor, 0.0, 1.0);
 }

@@ -72,13 +72,13 @@ function keyDown(e) {
 }
 
 function keyUp(e){
+    let actual = objectsToRender[0];
+
     if (e.keyCode === 38 || e.keyCode === 37) {  // Up or Left arrow
-        let actual = objectsToRender[0].assetType;
-        if (actual > AssetType.HYDROGEN) setAtom(actual-1);
+        if (actual.assetType > AssetType.HYDROGEN) setAtom(actual.assetType-1);
     }
     if (e.keyCode === 40 || e.keyCode === 39) {  // Down or Right arrow
-        let actual = objectsToRender[0].assetType;
-        if (actual < AssetType.OXYGEN) setAtom(actual+1);
+        if (actual.assetType < AssetType.OXYGEN) setAtom(actual.assetType+1);
     }
 
     if (e.keyCode === 87) {  // w
@@ -92,16 +92,19 @@ function keyUp(e){
         commandClicked = false;
     }
 
-    if (e.keyCode === 88) {  // z
+    if (e.keyCode === 88) {  // x
         camera.viewFromX();
+        //actual.parent.resetPosition();
     }
 
-    if (e.keyCode === 89) {  // z
+    if (e.keyCode === 89) {  // y
         camera.viewFromY();
+        //actual.parent.resetPosition();
     }
 
     if (e.keyCode === 90) {  // z
         camera.viewFromZ();
+        //actual.parent.resetPosition();
     }
 
 }
