@@ -8,16 +8,12 @@ class SceneNode {
     worldMatrix;
     assetType;
     animation;
-    name = "nome";
-    
-    constructor(assetType, cords) {
+
+    constructor(parent, assetType, cords) {
         this.assetType = assetType;
         this.defCords = cords;
         this.setPosition(cords);
-    }
-
-    setName = (name) => {
-        this.name = name;
+        this.setParent(parent);
     }
 
     resetPosition = () => {
@@ -75,8 +71,7 @@ class SceneNode {
         })
     }
 
-    getCordsInObjectSpace = (objectWorldMatrix) => {
-        let inverseObjectMatrix = utils.invertMatrix(objectWorldMatrix);
+    getCordsInObjectSpace = (inverseObjectMatrix) => {
         let objectSpaceMatrix = utils.multiplyMatrices(inverseObjectMatrix, this.worldMatrix);
         return utils.multiplyMatrixVector(objectSpaceMatrix, [this.localCords.x, this.localCords.y, this.localCords.z, 1.0]);
     }

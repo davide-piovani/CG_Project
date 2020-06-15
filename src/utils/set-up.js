@@ -6,7 +6,7 @@ function eraseCanvas() {
 function resizeCanvas() {
     utils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    a = gl.canvas.width/gl.canvas.height;
+    camera.setAspectRatio(gl.canvas.width/gl.canvas.height);
 }
 
 function setUpCanvas() {

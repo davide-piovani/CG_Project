@@ -3,43 +3,26 @@ let buttons;
 
 function setAtom(assetType) {
     rootNode = new SceneNode();
-    rootNode.setName("Root");
 
     objectsToRender = [];
+    lights = [];
     nodesToAnimate = [];
 
     let asset = assetsData[assetType];
 
-    let floor = new SceneNode(AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords);
-    floor.setName("Floor");
-    floor.setParent(rootNode);
-
-    atomOrbit = new SceneNode();
-    atomOrbit.setName("Atom orbit");
-    atomOrbit.setParent(rootNode);
-
-    let atom = new SceneNode(assetType, asset.defaultCords);
-    atom.setName("Atom");
-    atom.setParent(atomOrbit);
+    let floor = new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords);
+    atomOrbit = new SceneNode(rootNode);
+    let atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
 
     objectsToRender.push(atom, floor);
 
-    light = new SceneNode(AssetType.LIGHT, assetsData[AssetType.LIGHT].defaultCords);
-    light.setName("Light");
-
     for(let i = 0; i < asset.other.n_el; i++) {
-        let electronOrbit = new SceneNode(null, {x: 1.0});
-        electronOrbit.setName("Electron orbit");
-        electronOrbit.setParent(atomOrbit);
+        let electronOrbit = new SceneNode(atomOrbit, null, {x: 1.0});
         electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
         nodesToAnimate.push(electronOrbit);
 
-        let electron = new SceneNode(AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
-        electron.setName("Electron");
-        electron.setParent(electronOrbit);
-
-        light.setParent(electronOrbit);
-
+        let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
+        lights.push(electron);
         objectsToRender.push(electron);
     }
 }
@@ -57,16 +40,13 @@ function animate(){
 }
 
 function loadUniforms(drawInfo, locations) {
-    let lightAsset = assetsData[AssetType.LIGHT];
-
     if (locations.hasOwnProperty("textureLocation")) gl.uniform1i(locations.textureLocation, assetsData[AssetType.TEXTURE].texture);
-    if (locations.hasOwnProperty("lightColorLocation")) gl.uniform4fv(locations.lightColorLocation, new Float32Array(lightAsset.color));
-    if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation, lightAsset.g);
-    if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, lightAsset.decay);
     if (locations.hasOwnProperty("ambientColorLocation")) gl.uniform4fv(locations.ambientColorLocation, new Float32Array(drawInfo.ambientColor));
     if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation, new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
-    if (locations.hasOwnProperty("difColorLocation")) gl.uniform4fv(locations.difColorLocation, new Float32Array(drawInfo.diffuseColor));
     if (locations.hasOwnProperty("emissionColorLocation")) gl.uniform4fv(locations.emissionColorLocation, new Float32Array(drawInfo.emissionColor));
+
+    if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
+    if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
 }
 
 function drawScene() {
@@ -77,7 +57,7 @@ function drawScene() {
 
     objectsToRender.forEach((sceneNode) => {
         let worldViewMatrix = utils.multiplyMatrices(camera.viewMatrix, sceneNode.worldMatrix);
-        let wvpMatrix = utils.multiplyMatrices(projectionMatrix, worldViewMatrix);
+        let wvpMatrix = utils.multiplyMatrices(camera.projectionMatrix, worldViewMatrix);
 
         let drawInfo = assetsData[sceneNode.assetType].drawInfo;
         let locations = drawInfo.locations;
@@ -86,9 +66,25 @@ function drawScene() {
 
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
-        if (locations.hasOwnProperty("lightPositionLocation")) {
-            let lightObjectCords = light.getCordsInObjectSpace(sceneNode.worldMatrix);
-            gl.uniform3fv(locations.lightPositionLocation, new Float32Array([lightObjectCords[0], lightObjectCords[1], lightObjectCords[2]]));
+        if (locations.hasOwnProperty("lightPositionLocation") && locations.hasOwnProperty("lightColorLocation")) {
+            let inverseObjectMatrix = utils.invertMatrix(sceneNode.worldMatrix);
+            let electronLightColor = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color;
+            let lightPos = [];
+            let lightCol = [];
+
+            for(let i = 0; i < 8; i++){
+                if (lights[i]) {
+                    let lightObjectCords = lights[i].getCordsInObjectSpace(inverseObjectMatrix);
+                    lightPos.push(lightObjectCords[0], lightObjectCords[1], lightObjectCords[2]);
+                    lightCol.push(electronLightColor[0], electronLightColor[1], electronLightColor[2], electronLightColor[3]);
+                } else {
+                    lightPos.push(0.0, 0.0, 0.0);
+                    lightCol.push(0.0, 0.0, 0.0, 0.0);
+                }
+            }
+
+            gl.uniform3fv(locations.lightPositionLocation, new Float32Array(lightPos));
+            gl.uniform4fv(locations.lightColorLocation, new Float32Array(lightCol));
         }
 
         loadUniforms(assetsData[sceneNode.assetType].drawInfo, locations);
@@ -106,13 +102,9 @@ function setUpUI() {
     buttons.namedItem("axis_z").style.backgroundColor = "red";
 }
 
-function resize() {
-    resizeCanvas();
-    projectionMatrix = utils.MakeParallel(w, a, n, f);
-}
-
 function main() {
-    projectionMatrix = utils.MakePerspective(fieldOfView, a, n, f);
+    camera.updateViewMatrix();
+    camera.updateProjectionMatrix();
     loadAttribAndUniformsLocations();
     loadVaos();
 
@@ -134,4 +126,4 @@ async function init() {
 }
 
 window.onload = init;
-window.onresize = resize;
+window.onresize = resizeCanvas;

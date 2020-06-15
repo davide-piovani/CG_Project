@@ -2,20 +2,11 @@ let gl;
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
 
-let a;
-let n = 0.1;
-let f = 100.0;
-
-let w = 3;              //only if we use parallel projection
-let fieldOfView = 90;   //only if we use perspective projection
-
 let ambientLight = 0.1;
-
-let electron_velocity = 0.3;
 
 let objectsToRender = [];
 let nodesToAnimate = [];
-let light = new SceneNode();
+let lights = [];
 let camera = new Camera();
 
 let paths = {

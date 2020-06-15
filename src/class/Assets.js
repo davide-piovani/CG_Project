@@ -6,8 +6,7 @@ let AssetType = {
     CARBON: 4,
     OXYGEN: 5,
     FLOOR: 6,
-    LIGHT: 7,
-    CUBE: 8
+    CUBE: 7
 }
 
 let r = 1.0;
@@ -17,7 +16,6 @@ let assetsData = [
         type: AssetType.TEXTURE,
         texture: null
     },
-
 
     {
         type: AssetType.ELECTRON,
@@ -36,6 +34,12 @@ let assetsData = [
             ambientColor: [0.97, 0.89, 0.05, 1.0],
             emissionColor: [0.97, 0.89, 0.05, 1.0],
 
+            lightInfo: {
+                color: [0.9, 0.9, 0.9, 1.0],
+                g: 2.5,
+                decay: 2.0
+            },
+
             locations: {
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
@@ -44,6 +48,9 @@ let assetsData = [
                 ambientLightLocation: null,
                 emissionColorLocation: null
             }
+        },
+        other: {
+            electron_velocity: 0.3
         }
     },
 
@@ -214,18 +221,6 @@ let assetsData = [
                 ambientColorLocation: null,
             },
         }
-    },
-
-    {
-        type: AssetType.LIGHT,
-        defaultCords: {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0
-        },
-        color: [0.9, 0.9, 0.9, 1.0],
-        g: 5.0,
-        decay: 2.0
     },
 
     {
