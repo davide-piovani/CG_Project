@@ -2,7 +2,7 @@ let gl;
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
 
-let ambientLight = 0.1;
+let ambientLight = 0.25;
 
 let objectsToRender = [];
 let nodesToAnimate = [];

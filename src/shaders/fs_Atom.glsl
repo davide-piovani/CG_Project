@@ -19,12 +19,14 @@ out vec4 outColor;
 void main() {
     vec4 objectColor = texture(u_texture, uvFS);
 
-    vec4 pointLightIntensity = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 contrib = vec4(0.0, 0.0, 0.0, 0.0);
     for(int i = 0; i < 8; i++){
+        vec3 pointLightDir = normalize(light_pos[i] - fs_pos);
         float decay_factor = pow(light_g / length(light_pos[i] - fs_pos), light_decay);
-        vec4 lightIntensity = decay_factor * light_color[i];
-        pointLightIntensity = pointLightIntensity + lightIntensity;
+        vec4 lightColor = decay_factor * light_color[i];
+
+        contrib = contrib + lightColor * clamp(dot(pointLightDir, fs_normal), 0.0, 1.0);
     }
 
-    outColor = clamp(objectColor*pointLightIntensity + objectColor*ambientLight, 0.0, 1.0);
+    outColor = clamp(objectColor*contrib + objectColor*ambientLight, 0.0, 1.0);
 }

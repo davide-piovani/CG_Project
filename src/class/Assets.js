@@ -36,7 +36,7 @@ let assetsData = [
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
-                g: 2.5,
+                g: 3.0,
                 decay: 2.0
             },
 
@@ -50,7 +50,7 @@ let assetsData = [
             }
         },
         other: {
-            electron_velocity: 0.3
+            electron_velocity: 0.5
         }
     },
 
