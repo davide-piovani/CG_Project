@@ -16,6 +16,19 @@ function setAtom(assetType) {
 
     objectsToRender.push(atom, floor);
 
+
+    // let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.8, y: 0.05});
+    //
+    // let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
+    // lights.push(electron);
+    // objectsToRender.push(electron);
+    //
+    // let electronOrbit2 = new SceneNode(atomOrbit, null, {x: 1.2, y: 0.15});
+    //
+    // let electron2 = new SceneNode(electronOrbit2, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
+    // lights.push(electron2);
+    // objectsToRender.push(electron2);
+
     for(let i = 0; i < asset.other.n_el; i++) {
         let electronOrbit = new SceneNode(atomOrbit, null, {x: 1.0});
         electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
@@ -47,6 +60,8 @@ function loadUniforms(drawInfo, locations) {
 
     if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
     if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
+
+    if (locations.hasOwnProperty("electronRadiusLocation")) gl.uniform1f(locations.electronRadiusLocation, assetsData[AssetType.ELECTRON].other.asset_radius);
 }
 
 function drawScene() {
@@ -119,6 +134,8 @@ async function init() {
     await loadPrograms();
     await loadAssetsStruct();
     loadTexture();
+
+    assetsData[AssetType.ELECTRON].other.asset_radius *= assetsData[AssetType.ELECTRON].defaultCords.s;
 
     setAtom(AssetType.HYDROGEN);
 

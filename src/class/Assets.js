@@ -20,7 +20,7 @@ let assetsData = [
     {
         type: AssetType.ELECTRON,
         defaultCords: {
-            s: 0.15
+            s: 0.25
         },
         structInfo: {
             vertices: null,
@@ -50,7 +50,8 @@ let assetsData = [
             }
         },
         other: {
-            electron_velocity: 0.5
+            electron_velocity: 0.2,
+            asset_radius: 0.4
         }
     },
 
@@ -80,7 +81,8 @@ let assetsData = [
                 lightPositionLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null
+                ambientLightLocation: null,
+                electronRadiusLocation: null
             }
         },
         other: {
@@ -115,7 +117,8 @@ let assetsData = [
                 lightPositionLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null
+                ambientLightLocation: null,
+                electronRadiusLocation: null
             }
         },
         other: {
@@ -152,7 +155,8 @@ let assetsData = [
                 lightPositionLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null
+                ambientLightLocation: null,
+                electronRadiusLocation: null
             }
         },
         other: {
@@ -189,7 +193,8 @@ let assetsData = [
                 lightPositionLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null
+                ambientLightLocation: null,
+                electronRadiusLocation: null
             }
         },
         other: {

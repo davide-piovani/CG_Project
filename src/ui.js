@@ -107,6 +107,10 @@ function keyUp(e){
         //actual.parent.resetPosition();
     }
 
+    if (e.keyCode === 82) {  // r
+        actual.parent.resetPosition();
+    }
+
 }
 
 function mouseMove(e) {

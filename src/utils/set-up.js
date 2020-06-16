@@ -128,7 +128,7 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
     if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation = gl.getUniformLocation(program, "ambientLight");
     if (locations.hasOwnProperty("difColorLocation")) assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
     if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation = gl.getUniformLocation(program, "emitColor");
-
+    if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation = gl.getUniformLocation(program, "electronRadius");
 }
 
 function loadAttribAndUniformsLocations() {
@@ -171,15 +171,11 @@ function loadVao(assetType) {
 }
 
 function loadVaos() {
-    applyToAll(loadVao);
-}
-
-function applyToAll(func) {     //TODO: delete
-    func(AssetType.ELECTRON);
-    func(AssetType.HYDROGEN);
-    func(AssetType.HELIUM);
-    func(AssetType.CARBON);
-    func(AssetType.OXYGEN);
-    func(AssetType.FLOOR);
-    func(AssetType.CUBE);
+    loadVao(AssetType.ELECTRON);
+    loadVao(AssetType.HYDROGEN);
+    loadVao(AssetType.HELIUM);
+    loadVao(AssetType.CARBON);
+    loadVao(AssetType.OXYGEN);
+    loadVao(AssetType.FLOOR);
+    loadVao(AssetType.CUBE);
 }
