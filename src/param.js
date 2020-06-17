@@ -10,6 +10,11 @@ let Specular = {
     BLINN: 2.0
 }
 
+let Smooth = {
+    VERTEX: 0.0,
+    PIXEL: 1.0
+}
+
 let gl;
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
@@ -24,8 +29,9 @@ let camera = new Camera();
 let rayCastingActive = 1.0;
 let defaultSpecShine = 50.0;
 let defaultSigma = 1.5;
-let diffuseMode = Diffuse.OREN_NAYAR;
-let specularMode = Specular.NO;
+let diffuseMode = Diffuse.LAMBERT;
+let specularMode = Specular.BLINN;
+let smoothType = Smooth.PIXEL;
 
 let paths = {
     base: "",
@@ -33,12 +39,14 @@ let paths = {
     shaders: {
         base: "src/shaders",
         vs: {
-            atom: "/vs_Atom.glsl",
+            atomVertex: "/vertex/vs_AtomVertex.glsl",
+            atomPixel: "/pixel/vs_AtomPixel.glsl",
             electron: "/vs_Electron.glsl",
             floor: "/vs_Floor.glsl",
         },
         fs: {
-            atom: "/fs_Atom.glsl",
+            atomVertex: "/vertex/fs_AtomVertex.glsl",
+            atomPixel: "/pixel/fs_AtomPixel.glsl",
             electron: "/fs_Electron.glsl",
             floor: "/fs_Floor.glsl",
         }

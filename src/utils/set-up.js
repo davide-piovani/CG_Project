@@ -30,13 +30,15 @@ function initializePaths() {
     paths.shaders.base = paths.base + paths.shaders.base;
 
     paths.shaders.vs = {
-        atom: paths.shaders.base + paths.shaders.vs.atom,
+        atomVertex: paths.shaders.base + paths.shaders.vs.atomVertex,
+        atomPixel: paths.shaders.base + paths.shaders.vs.atomPixel,
         electron: paths.shaders.base + paths.shaders.vs.electron,
         floor: paths.shaders.base + paths.shaders.vs.floor,
     }
 
     paths.shaders.fs = {
-        atom: paths.shaders.base + paths.shaders.fs.atom,
+        atomVertex: paths.shaders.base + paths.shaders.fs.atomVertex,
+        atomPixel: paths.shaders.base + paths.shaders.fs.atomPixel,
         electron: paths.shaders.base + paths.shaders.fs.electron,
         floor: paths.shaders.base + paths.shaders.fs.floor,
     }
@@ -52,13 +54,17 @@ async function loadProgram(vs_path, fs_path) {
 }
 
 async function loadPrograms() {
-    assetsData[AssetType.ELECTRON].drawInfo.program = await loadProgram(paths.shaders.vs.electron, paths.shaders.fs.electron);
-    let atomProgram = await loadProgram(paths.shaders.vs.atom, paths.shaders.fs.atom);
-    assetsData[AssetType.HYDROGEN].drawInfo.program = atomProgram;
-    assetsData[AssetType.HELIUM].drawInfo.program = atomProgram;
-    assetsData[AssetType.CARBON].drawInfo.program = atomProgram;
-    assetsData[AssetType.OXYGEN].drawInfo.program = atomProgram;
-    assetsData[AssetType.FLOOR].drawInfo.program = await loadProgram(paths.shaders.vs.floor, paths.shaders.fs.floor);
+    assetsData[AssetType.ELECTRON].drawInfo.program.push(await loadProgram(paths.shaders.vs.electron, paths.shaders.fs.electron));
+
+    let atomVertexProgram = await loadProgram(paths.shaders.vs.atomVertex, paths.shaders.fs.atomVertex);
+    let atomPixelProgram = await loadProgram(paths.shaders.vs.atomPixel, paths.shaders.fs.atomPixel);
+
+    assetsData[AssetType.HYDROGEN].drawInfo.program.push(atomVertexProgram, atomPixelProgram);
+    assetsData[AssetType.HELIUM].drawInfo.program.push(atomVertexProgram, atomPixelProgram);
+    assetsData[AssetType.CARBON].drawInfo.program.push(atomVertexProgram, atomPixelProgram);
+    assetsData[AssetType.OXYGEN].drawInfo.program.push(atomVertexProgram, atomPixelProgram);
+
+    assetsData[AssetType.FLOOR].drawInfo.program.push(await loadProgram(paths.shaders.vs.floor, paths.shaders.fs.floor));
 }
 
 async function getStruct(path) {
@@ -108,32 +114,39 @@ function loadTexture() {
 
 function loadAttribAndUniformsLocationsForAsset(assetType) {
     if (!assetsData[assetType].hasOwnProperty("drawInfo")) return;
-    let program = assetsData[assetType].drawInfo.program;
+    let programs = assetsData[assetType].drawInfo.program;
     let locations = assetsData[assetType].drawInfo.locations;
 
-    if (locations.hasOwnProperty("positionAttributeLocation")) assetsData[assetType].drawInfo.locations.positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    if (locations.hasOwnProperty("normalsAttributeLocation")) assetsData[assetType].drawInfo.locations.normalsAttributeLocation = gl.getAttribLocation(program, "a_normal");
-    if (locations.hasOwnProperty("uvAttributeLocation")) assetsData[assetType].drawInfo.locations.uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
-    if (locations.hasOwnProperty("wvpMatrixLocation")) assetsData[assetType].drawInfo.locations.wvpMatrixLocation = gl.getUniformLocation(program, "wvpMatrix");
-    if (locations.hasOwnProperty("normalMatrixLocation")) assetsData[assetType].drawInfo.locations.normalMatrixLocation = gl.getUniformLocation(program, "normalMatrix");
-    if (locations.hasOwnProperty("textureLocation")) assetsData[assetType].drawInfo.locations.textureLocation = gl.getUniformLocation(program, "u_texture");
-    if (locations.hasOwnProperty("lightColorLocation")) assetsData[assetType].drawInfo.locations.lightColorLocation = gl.getUniformLocation(program, "light_color");
-    if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation = gl.getUniformLocation(program, "light_pos");
-    if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation = gl.getUniformLocation(program, "light_g");
-    if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation = gl.getUniformLocation(program, "light_decay");
-    if (locations.hasOwnProperty("ambientColorLocation")) assetsData[assetType].drawInfo.locations.ambientColorLocation = gl.getUniformLocation(program, "ambientColor");
-    if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation = gl.getUniformLocation(program, "ambientLight");
-    if (locations.hasOwnProperty("difColorLocation")) assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
-    if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation = gl.getUniformLocation(program, "emitColor");
-    if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation = gl.getUniformLocation(program, "electronRadius");
-    if (locations.hasOwnProperty("eyePosLocation")) assetsData[assetType].drawInfo.locations.eyePosLocation = gl.getUniformLocation(program, "eyePos");
-    if (locations.hasOwnProperty("specShineLocation")) assetsData[assetType].drawInfo.locations.specShineLocation = gl.getUniformLocation(program, "SpecShine");
-    if (locations.hasOwnProperty("rayCastingLocation")) assetsData[assetType].drawInfo.locations.rayCastingLocation = gl.getUniformLocation(program, "rayCasting");
+    for(let program of programs) {
+        // Asset params
+        if (locations.hasOwnProperty("positionAttributeLocation")) assetsData[assetType].drawInfo.locations.positionAttributeLocation.push(gl.getAttribLocation(program, "a_position"));
+        if (locations.hasOwnProperty("normalsAttributeLocation")) assetsData[assetType].drawInfo.locations.normalsAttributeLocation.push(gl.getAttribLocation(program, "a_normal"));
+        if (locations.hasOwnProperty("uvAttributeLocation")) assetsData[assetType].drawInfo.locations.uvAttributeLocation.push(gl.getAttribLocation(program, "a_uv"));
+        if (locations.hasOwnProperty("wvpMatrixLocation")) assetsData[assetType].drawInfo.locations.wvpMatrixLocation.push(gl.getUniformLocation(program, "wvpMatrix"));
 
-    if (locations.hasOwnProperty("sigmaLocation")) assetsData[assetType].drawInfo.locations.sigmaLocation = gl.getUniformLocation(program, "sigma_squared");
-    if (locations.hasOwnProperty("diffuseModeLocation")) assetsData[assetType].drawInfo.locations.diffuseModeLocation = gl.getUniformLocation(program, "diffuseMode");
-    if (locations.hasOwnProperty("specularModeLocation")) assetsData[assetType].drawInfo.locations.specularModeLocation = gl.getUniformLocation(program, "specularMode");
+        // Object params
+        if (locations.hasOwnProperty("textureLocation")) assetsData[assetType].drawInfo.locations.textureLocation.push(gl.getUniformLocation(program, "u_texture"));
+        if (locations.hasOwnProperty("ambientColorLocation")) assetsData[assetType].drawInfo.locations.ambientColorLocation.push(gl.getUniformLocation(program, "ambientColor"));
+        if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation.push(gl.getUniformLocation(program, "emitColor"));
 
+        // Lights params
+        if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation.push(gl.getUniformLocation(program, "ambientLight"));
+        if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation.push(gl.getUniformLocation(program, "light_g"));
+        if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation.push(gl.getUniformLocation(program, "light_decay"));
+        if (locations.hasOwnProperty("lightColorLocation")) assetsData[assetType].drawInfo.locations.lightColorLocation.push(gl.getUniformLocation(program, "light_color"));
+        if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation.push(gl.getUniformLocation(program, "light_pos"));
+
+        // Raycasting params
+        if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation.push(gl.getUniformLocation(program, "electronRadius"));
+        if (locations.hasOwnProperty("rayCastingLocation")) assetsData[assetType].drawInfo.locations.rayCastingLocation.push(gl.getUniformLocation(program, "rayCasting"));
+
+        // BRDF
+        if (locations.hasOwnProperty("diffuseModeLocation")) assetsData[assetType].drawInfo.locations.diffuseModeLocation.push(gl.getUniformLocation(program, "diffuseMode"));
+        if (locations.hasOwnProperty("specularModeLocation")) assetsData[assetType].drawInfo.locations.specularModeLocation.push(gl.getUniformLocation(program, "specularMode"));
+        if (locations.hasOwnProperty("specShineLocation")) assetsData[assetType].drawInfo.locations.specShineLocation.push(gl.getUniformLocation(program, "SpecShine"));
+        if (locations.hasOwnProperty("sigmaLocation")) assetsData[assetType].drawInfo.locations.sigmaLocation.push(gl.getUniformLocation(program, "sigma_squared"));
+        if (locations.hasOwnProperty("eyePosLocation")) assetsData[assetType].drawInfo.locations.eyePosLocation.push(gl.getUniformLocation(program, "eyePos"));
+    }
 }
 
 function loadAttribAndUniformsLocations() {
@@ -158,28 +171,37 @@ function loadIndexBuffer(data) {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 }
 
-function loadVao(assetType) {
+function loadVao(assetType, i) {
     let vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
 
     let asset = assetsData[assetType];
     let structInfo = asset.structInfo;
     let locations = asset.drawInfo.locations;
+    
+    if (!i) i = 0;
 
-    loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation, 3);
-    if (locations.hasOwnProperty("normalsAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.normals), locations.normalsAttributeLocation, 3);
-    if (locations.hasOwnProperty("uvAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation, 2);
+    loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation[i], 3);
+    if (locations.hasOwnProperty("normalsAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.normals), locations.normalsAttributeLocation[i], 3);
+    if (locations.hasOwnProperty("uvAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation[i], 2);
     loadIndexBuffer(new Uint16Array(structInfo.indices));
 
     assetsData[assetType].drawInfo.bufferLength = assetsData[assetType].structInfo.indices.length;
-    assetsData[assetType].drawInfo.vao = vao;
+    assetsData[assetType].drawInfo.vao.push(vao);
 }
 
 function loadVaos() {
     loadVao(AssetType.ELECTRON);
-    loadVao(AssetType.HYDROGEN);
-    loadVao(AssetType.HELIUM);
-    loadVao(AssetType.CARBON);
-    loadVao(AssetType.OXYGEN);
+    
+    loadVao(AssetType.HYDROGEN, Smooth.VERTEX);
+    loadVao(AssetType.HELIUM, Smooth.VERTEX);
+    loadVao(AssetType.CARBON, Smooth.VERTEX);
+    loadVao(AssetType.OXYGEN, Smooth.VERTEX);
+
+    loadVao(AssetType.HYDROGEN, Smooth.PIXEL);
+    loadVao(AssetType.HELIUM, Smooth.PIXEL);
+    loadVao(AssetType.CARBON, Smooth.PIXEL);
+    loadVao(AssetType.OXYGEN, Smooth.PIXEL);
+    
     loadVao(AssetType.FLOOR);
 }

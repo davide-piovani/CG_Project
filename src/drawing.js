@@ -51,26 +51,26 @@ function animate(){
     })
 }
 
-function loadUniforms(drawInfo, locations) {
+function loadUniforms(drawInfo, locations, i) {
     // Object params
-    if (locations.hasOwnProperty("textureLocation")) gl.uniform1i(locations.textureLocation, assetsData[AssetType.TEXTURE].texture);
-    if (locations.hasOwnProperty("ambientColorLocation")) gl.uniform4fv(locations.ambientColorLocation, new Float32Array(drawInfo.ambientColor));
-    if (locations.hasOwnProperty("emissionColorLocation")) gl.uniform4fv(locations.emissionColorLocation, new Float32Array(drawInfo.emissionColor));
+    if (locations.hasOwnProperty("textureLocation")) gl.uniform1i(locations.textureLocation[i], assetsData[AssetType.TEXTURE].texture);
+    if (locations.hasOwnProperty("ambientColorLocation")) gl.uniform4fv(locations.ambientColorLocation[i], new Float32Array(drawInfo.ambientColor));
+    if (locations.hasOwnProperty("emissionColorLocation")) gl.uniform4fv(locations.emissionColorLocation[i], new Float32Array(drawInfo.emissionColor));
 
     // Lights params
-    if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation, new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
-    if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
-    if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
+    if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation[i], new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
+    if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
+    if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
 
     // Raycasting params
-    if (locations.hasOwnProperty("electronRadiusLocation")) gl.uniform1f(locations.electronRadiusLocation, assetsData[AssetType.ELECTRON].other.asset_radius);
-    if (locations.hasOwnProperty("rayCastingLocation")) gl.uniform1f(locations.rayCastingLocation, rayCastingActive);
+    if (locations.hasOwnProperty("electronRadiusLocation")) gl.uniform1f(locations.electronRadiusLocation[i], assetsData[AssetType.ELECTRON].other.asset_radius);
+    if (locations.hasOwnProperty("rayCastingLocation")) gl.uniform1f(locations.rayCastingLocation[i], rayCastingActive);
 
     // BRDF
-    if (locations.hasOwnProperty("diffuseModeLocation")) gl.uniform1f(locations.diffuseModeLocation, diffuseMode);
-    if (locations.hasOwnProperty("specularModeLocation")) gl.uniform1f(locations.specularModeLocation, specularMode);
-    if (locations.hasOwnProperty("specShineLocation")) gl.uniform1f(locations.specShineLocation, drawInfo.specShine);
-    if (locations.hasOwnProperty("sigmaLocation")) gl.uniform1f(locations.sigmaLocation, drawInfo.sigma*drawInfo.sigma);
+    if (locations.hasOwnProperty("diffuseModeLocation")) gl.uniform1f(locations.diffuseModeLocation[i], diffuseMode);
+    if (locations.hasOwnProperty("specularModeLocation")) gl.uniform1f(locations.specularModeLocation[i], specularMode);
+    if (locations.hasOwnProperty("specShineLocation")) gl.uniform1f(locations.specShineLocation[i], drawInfo.specShine);
+    if (locations.hasOwnProperty("sigmaLocation")) gl.uniform1f(locations.sigmaLocation[i], drawInfo.sigma*drawInfo.sigma);
 }
 
 function drawScene() {
@@ -86,12 +86,13 @@ function drawScene() {
         let drawInfo = assetsData[sceneNode.assetType].drawInfo;
         let locations = drawInfo.locations;
 
-        gl.useProgram(drawInfo.program);
+        let index = (sceneNode.assetType === AssetType.ELECTRON || sceneNode.assetType === AssetType.FLOOR) ? 0 : smoothType;
 
-        gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
+        gl.useProgram(drawInfo.program[index]);
+
+        gl.uniformMatrix4fv(locations.wvpMatrixLocation[index], gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
         let inverseWorldMatrix = utils.invertMatrix(sceneNode.worldMatrix);
-        let inverseViewMatrix = utils.invertMatrix(camera.viewMatrix);
 
         if (locations.hasOwnProperty("lightPositionLocation") && locations.hasOwnProperty("lightColorLocation")) {
             let inverseObjectMatrix = inverseWorldMatrix;
@@ -110,20 +111,20 @@ function drawScene() {
                 }
             }
 
-            gl.uniform3fv(locations.lightPositionLocation, new Float32Array(lightPos));
-            gl.uniform4fv(locations.lightColorLocation, new Float32Array(lightCol));
+            gl.uniform3fv(locations.lightPositionLocation[index], new Float32Array(lightPos));
+            gl.uniform4fv(locations.lightColorLocation[index], new Float32Array(lightCol));
         }
 
         if (locations.hasOwnProperty("eyePosLocation")) {
             let eyePos = camera.getWorldPosition();
             let matrix = utils.MakeScaleMatrix(1/0.2);
             let objectEyePos = utils.multiplyMatrixVector(matrix, eyePos);
-            gl.uniform3fv(locations.eyePosLocation, new Float32Array([objectEyePos[0], objectEyePos[1], objectEyePos[2]]));
+            gl.uniform3fv(locations.eyePosLocation[index], new Float32Array([objectEyePos[0], objectEyePos[1], objectEyePos[2]]));
         }
 
-        loadUniforms(assetsData[sceneNode.assetType].drawInfo, locations);
+        loadUniforms(assetsData[sceneNode.assetType].drawInfo, locations, index);
 
-        gl.bindVertexArray(drawInfo.vao);
+        gl.bindVertexArray(drawInfo.vao[index]);
         gl.drawElements(gl.TRIANGLES, drawInfo.bufferLength, gl.UNSIGNED_SHORT, 0 );
     })
 
@@ -217,4 +218,8 @@ function setDiffuseMode(mode) {
 
 function setSpecularMode(mode) {
     specularMode = mode;
+}
+
+function toggleSmooth() {
+    smoothType = smoothType === Smooth.VERTEX ? Smooth.PIXEL : Smooth.VERTEX;
 }

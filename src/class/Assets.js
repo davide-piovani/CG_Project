@@ -27,9 +27,9 @@ let assetsData = [
             indices: null,
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             ambientColor: [0.97, 0.89, 0.05, 1.0],
             emissionColor: [0.97, 0.89, 0.05, 1.0],
 
@@ -41,16 +41,16 @@ let assetsData = [
 
             locations: {
                 // Asset params
-                positionAttributeLocation: null,
-                normalsAttributeLocation: null,
-                wvpMatrixLocation: null,
+                positionAttributeLocation: [],
+                normalsAttributeLocation: [],
+                wvpMatrixLocation: [],
 
                 // Object params
-                ambientColorLocation: null,
-                emissionColorLocation: null,
+                ambientColorLocation: [],
+                emissionColorLocation: [],
 
                 // Lights params
-                ambientLightLocation: null,
+                ambientLightLocation: [],
             }
         },
         other: {
@@ -72,39 +72,39 @@ let assetsData = [
             textures: null,
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             specShine: defaultSpecShine,
             sigma: defaultSigma,
 
             locations: {
                 // Asset params
-                positionAttributeLocation: null,
-                normalsAttributeLocation: null,
-                uvAttributeLocation: null,
-                wvpMatrixLocation: null,
+                positionAttributeLocation: [],
+                normalsAttributeLocation: [],
+                uvAttributeLocation: [],
+                wvpMatrixLocation: [],
 
                 // Object params
-                textureLocation: null,
+                textureLocation: [],
 
                 // Lights params
-                ambientLightLocation: null,
-                lightTargetLocation: null,
-                lightDecayLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+                ambientLightLocation: [],
+                lightTargetLocation: [],
+                lightDecayLocation: [],
+                lightColorLocation: [],
+                lightPositionLocation: [],
 
                 // Raycasting params
-                electronRadiusLocation: null,
-                rayCastingLocation: null,
+                electronRadiusLocation: [],
+                rayCastingLocation: [],
 
                 // BRDF
-                diffuseModeLocation: null,
-                specularModeLocation: null,
-                specShineLocation: null,
-                sigmaLocation: null,
-                eyePosLocation: null
+                diffuseModeLocation: [],
+                specularModeLocation: [],
+                specShineLocation: [],
+                sigmaLocation: [],
+                eyePosLocation: []
             }
         },
         other: {
@@ -126,39 +126,39 @@ let assetsData = [
             textures: null,
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             specShine: defaultSpecShine,
             sigma: defaultSigma,
 
             locations: {
                 // Asset params
-                positionAttributeLocation: null,
-                normalsAttributeLocation: null,
-                uvAttributeLocation: null,
-                wvpMatrixLocation: null,
+                positionAttributeLocation: [],
+                normalsAttributeLocation: [],
+                uvAttributeLocation: [],
+                wvpMatrixLocation: [],
 
                 // Object params
-                textureLocation: null,
+                textureLocation: [],
 
                 // Lights params
-                ambientLightLocation: null,
-                lightTargetLocation: null,
-                lightDecayLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+                ambientLightLocation: [],
+                lightTargetLocation: [],
+                lightDecayLocation: [],
+                lightColorLocation: [],
+                lightPositionLocation: [],
 
                 // Raycasting params
-                electronRadiusLocation: null,
-                rayCastingLocation: null,
+                electronRadiusLocation: [],
+                rayCastingLocation: [],
 
                 // BRDF
-                diffuseModeLocation: null,
-                specularModeLocation: null,
-                specShineLocation: null,
-                sigmaLocation: null,
-                eyePosLocation: null
+                diffuseModeLocation: [],
+                specularModeLocation: [],
+                specShineLocation: [],
+                sigmaLocation: [],
+                eyePosLocation: []
             }
         },
         other: {
@@ -182,39 +182,39 @@ let assetsData = [
             textures: null,
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             specShine: defaultSpecShine,
             sigma: defaultSigma,
 
             locations: {
                 // Asset params
-                positionAttributeLocation: null,
-                normalsAttributeLocation: null,
-                uvAttributeLocation: null,
-                wvpMatrixLocation: null,
+                positionAttributeLocation: [],
+                normalsAttributeLocation: [],
+                uvAttributeLocation: [],
+                wvpMatrixLocation: [],
 
                 // Object params
-                textureLocation: null,
+                textureLocation: [],
 
                 // Lights params
-                ambientLightLocation: null,
-                lightTargetLocation: null,
-                lightDecayLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+                ambientLightLocation: [],
+                lightTargetLocation: [],
+                lightDecayLocation: [],
+                lightColorLocation: [],
+                lightPositionLocation: [],
 
                 // Raycasting params
-                electronRadiusLocation: null,
-                rayCastingLocation: null,
+                electronRadiusLocation: [],
+                rayCastingLocation: [],
 
                 // BRDF
-                diffuseModeLocation: null,
-                specularModeLocation: null,
-                specShineLocation: null,
-                sigmaLocation: null,
-                eyePosLocation: null
+                diffuseModeLocation: [],
+                specularModeLocation: [],
+                specShineLocation: [],
+                sigmaLocation: [],
+                eyePosLocation: []
             }
         },
         other: {
@@ -238,39 +238,39 @@ let assetsData = [
             textures: null,
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             specShine: defaultSpecShine,
             sigma: defaultSigma,
 
             locations: {
                 // Asset params
-                positionAttributeLocation: null,
-                normalsAttributeLocation: null,
-                uvAttributeLocation: null,
-                wvpMatrixLocation: null,
+                positionAttributeLocation: [],
+                normalsAttributeLocation: [],
+                uvAttributeLocation: [],
+                wvpMatrixLocation: [],
 
                 // Object params
-                textureLocation: null,
+                textureLocation: [],
 
                 // Lights params
-                ambientLightLocation: null,
-                lightTargetLocation: null,
-                lightDecayLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+                ambientLightLocation: [],
+                lightTargetLocation: [],
+                lightDecayLocation: [],
+                lightColorLocation: [],
+                lightPositionLocation: [],
 
                 // Raycasting params
-                electronRadiusLocation: null,
-                rayCastingLocation: null,
+                electronRadiusLocation: [],
+                rayCastingLocation: [],
 
                 // BRDF
-                diffuseModeLocation: null,
-                specularModeLocation: null,
-                specShineLocation: null,
-                sigmaLocation: null,
-                eyePosLocation: null
+                diffuseModeLocation: [],
+                specularModeLocation: [],
+                specShineLocation: [],
+                sigmaLocation: [],
+                eyePosLocation: []
             }
         },
         other: {
@@ -292,14 +292,14 @@ let assetsData = [
             indices: [0, 1, 2, 1, 2, 3],
         },
         drawInfo: {
-            program: null,
+            program: [],
             bufferLength: 0,
-            vao: null,
+            vao: [],
             ambientColor: [0.0, 0.12, 0.5, 1.0],
             locations: {
-                positionAttributeLocation: null,
-                wvpMatrixLocation: null,
-                ambientColorLocation: null,
+                positionAttributeLocation: [],
+                wvpMatrixLocation: [],
+                ambientColorLocation: [],
             },
         }
     }
