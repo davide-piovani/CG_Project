@@ -4,6 +4,7 @@ let buttons;
 let axis_container;
 let left_block_container, right_block_container;
 let raycast_button;
+let floor_button;
 
 function buttonController(assetType)
 {
@@ -98,6 +99,21 @@ function toggleRaycast() {
     }
 }
 
+function toggleFloor() {
+    if(floor_button.innerText === "Active")
+    {
+        floor_button.innerText = "Not active";
+        floor_button.style.backgroundColor = "#1199EE";
+        // DEACTIVATE FLOOR
+    }
+    else
+    {
+        floor_button.innerText = "Active";
+        floor_button.style.backgroundColor = "red";
+        // ACTIVATE FLOOR
+    }
+}
+
 function keyDown(e) {
     if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
         commandClicked = true;
@@ -170,6 +186,7 @@ function setUpUI() {
     right_block_container = document.getElementById("right_block_container");
     raycast_button = document.getElementById("toggle_raycasting");
     raycast_button.style.backgroundColor = "red";
+    floor_button = document.getElementById("toggle_floor");
 
     left_block_container.style.width = "window.innerWidth-300";
     right_block_container.style.width = "300";
