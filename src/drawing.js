@@ -1,5 +1,4 @@
 let startTime = (new Date).getTime();
-let buttons;
 
 function setAtom(assetType) {
     rootNode = new SceneNode();
@@ -10,11 +9,11 @@ function setAtom(assetType) {
 
     let asset = assetsData[assetType];
 
-    let floor = new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords);
+    //let floor = new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords);
     atomOrbit = new SceneNode(rootNode);
     let atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
 
-    objectsToRender.push(atom, floor);
+    objectsToRender.push(atom);
 
 
     // let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.8, y: 0.05});
@@ -62,6 +61,8 @@ function loadUniforms(drawInfo, locations) {
     if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
 
     if (locations.hasOwnProperty("electronRadiusLocation")) gl.uniform1f(locations.electronRadiusLocation, assetsData[AssetType.ELECTRON].other.asset_radius);
+
+    if (locations.hasOwnProperty("specShineLocation")) gl.uniform1f(locations.specShineLocation, assetsData[AssetType.ELECTRON].drawInfo.specShine);
 }
 
 function drawScene() {
@@ -81,8 +82,11 @@ function drawScene() {
 
         gl.uniformMatrix4fv(locations.wvpMatrixLocation, gl.FALSE, utils.transposeMatrix(wvpMatrix));
 
+        let inverseWorldMatrix = utils.invertMatrix(sceneNode.worldMatrix);
+        let inverseViewMatrix = utils.invertMatrix(camera.viewMatrix);
+
         if (locations.hasOwnProperty("lightPositionLocation") && locations.hasOwnProperty("lightColorLocation")) {
-            let inverseObjectMatrix = utils.invertMatrix(sceneNode.worldMatrix);
+            let inverseObjectMatrix = inverseWorldMatrix;
             let electronLightColor = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color;
             let lightPos = [];
             let lightCol = [];
@@ -102,6 +106,13 @@ function drawScene() {
             gl.uniform4fv(locations.lightColorLocation, new Float32Array(lightCol));
         }
 
+        if (locations.hasOwnProperty("eyePosLocation")) {
+            let eyePos = camera.getWorldPosition();
+            let matrix = utils.MakeScaleMatrix(1/0.2);
+            let objectEyePos = utils.multiplyMatrixVector(matrix, eyePos);
+            gl.uniform3fv(locations.eyePosLocation, new Float32Array([objectEyePos[0], objectEyePos[1], objectEyePos[2]]));
+        }
+
         loadUniforms(assetsData[sceneNode.assetType].drawInfo, locations);
 
         gl.bindVertexArray(drawInfo.vao);
@@ -109,12 +120,6 @@ function drawScene() {
     })
 
     window.requestAnimationFrame(drawScene);
-}
-
-function setUpUI() {
-    buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
-    buttons.namedItem("H").style.backgroundColor = "red";
-    buttons.namedItem("axis_z").style.backgroundColor = "red";
 }
 
 function main() {
@@ -127,7 +132,6 @@ function main() {
 }
 
 async function init() {
-    setUpUI();
     setUpCanvas();
     initializePaths();
 
@@ -135,12 +139,11 @@ async function init() {
     await loadAssetsStruct();
     loadTexture();
 
-    assetsData[AssetType.ELECTRON].other.asset_radius *= assetsData[AssetType.ELECTRON].defaultCords.s;
+    //assetsData[AssetType.ELECTRON].other.asset_radius *= assetsData[AssetType.ELECTRON].defaultCords.s;
 
     setAtom(AssetType.HYDROGEN);
 
     main();
 }
 
-window.onload = init;
 window.onresize = resizeCanvas;

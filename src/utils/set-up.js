@@ -129,6 +129,9 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
     if (locations.hasOwnProperty("difColorLocation")) assetsData[assetType].drawInfo.locations.difColorLocation = gl.getUniformLocation(program, "difColor");
     if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation = gl.getUniformLocation(program, "emitColor");
     if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation = gl.getUniformLocation(program, "electronRadius");
+    if (locations.hasOwnProperty("eyePosLocation")) assetsData[assetType].drawInfo.locations.eyePosLocation = gl.getUniformLocation(program, "eyePos");
+    if (locations.hasOwnProperty("specShineLocation")) assetsData[assetType].drawInfo.locations.specShineLocation = gl.getUniformLocation(program, "SpecShine");
+
 }
 
 function loadAttribAndUniformsLocations() {

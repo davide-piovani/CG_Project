@@ -1,5 +1,6 @@
 let mouseClicked = false;
 let commandClicked = false;
+let buttons;
 
 function buttonController(assetType)
 {
@@ -57,12 +58,6 @@ function setCamera(code)
             buttons.namedItem("axis_z").style.backgroundColor = "red";
             break;
     }
-}
-
-function setUpUI() {
-    buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
-    buttons.namedItem("H").style.backgroundColor = "red";
-    buttons.namedItem("axis_z").style.backgroundColor = "red";
 }
 
 function keyDown(e) {
@@ -125,9 +120,18 @@ function mouseMove(e) {
     }
 }
 
+function setUpUI() {
+    init();
+
+    buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
+    buttons.namedItem("H").style.backgroundColor = "red";
+    buttons.namedItem("axis_z").style.backgroundColor = "red";
+}
+
 window.addEventListener("keydown", keyDown, false);
 window.addEventListener("keyup", keyUp, false);
 window.onmousedown = () => {mouseClicked = true};
 window.onmouseup = () => {mouseClicked = false};
 window.onmousemove = mouseMove;
+window.onload = setUpUI;
 

@@ -27,6 +27,10 @@ class Camera {
         this.updateProjectionMatrix();
     }
 
+    getWorldPosition = () => {
+        return [this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, 1.0];
+    }
+
     viewFromX = () => {
         this.viewInfo = {
             x: 2.0, y: 0.0, z: 0.0,

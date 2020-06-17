@@ -33,6 +33,7 @@ let assetsData = [
             vao: null,
             ambientColor: [0.97, 0.89, 0.05, 1.0],
             emissionColor: [0.97, 0.89, 0.05, 1.0],
+            specShine: 50.0,
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
@@ -82,7 +83,9 @@ let assetsData = [
                 lightTargetLocation: null,
                 lightDecayLocation: null,
                 ambientLightLocation: null,
-                electronRadiusLocation: null
+                electronRadiusLocation: null,
+                eyePosLocation: null,
+                specShineLocation: null
             }
         },
         other: {
@@ -118,7 +121,9 @@ let assetsData = [
                 lightTargetLocation: null,
                 lightDecayLocation: null,
                 ambientLightLocation: null,
-                electronRadiusLocation: null
+                electronRadiusLocation: null,
+                eyePosLocation: null,
+                specShineLocation: null
             }
         },
         other: {
@@ -156,7 +161,9 @@ let assetsData = [
                 lightTargetLocation: null,
                 lightDecayLocation: null,
                 ambientLightLocation: null,
-                electronRadiusLocation: null
+                electronRadiusLocation: null,
+                eyePosLocation: null,
+                specShineLocation: null
             }
         },
         other: {
@@ -194,7 +201,9 @@ let assetsData = [
                 lightTargetLocation: null,
                 lightDecayLocation: null,
                 ambientLightLocation: null,
-                electronRadiusLocation: null
+                electronRadiusLocation: null,
+                eyePosLocation: null,
+                specShineLocation: null
             }
         },
         other: {
