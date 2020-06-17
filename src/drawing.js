@@ -9,11 +9,11 @@ function setAtom(assetType) {
 
     let asset = assetsData[assetType];
 
-    //let floor = new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords);
     atomOrbit = new SceneNode(rootNode);
-    let atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
+    atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
 
     objectsToRender.push(atom);
+    toggleFloor();
 
 
     // let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.8, y: 0.05});
@@ -52,17 +52,25 @@ function animate(){
 }
 
 function loadUniforms(drawInfo, locations) {
+    // Object params
     if (locations.hasOwnProperty("textureLocation")) gl.uniform1i(locations.textureLocation, assetsData[AssetType.TEXTURE].texture);
     if (locations.hasOwnProperty("ambientColorLocation")) gl.uniform4fv(locations.ambientColorLocation, new Float32Array(drawInfo.ambientColor));
-    if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation, new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
     if (locations.hasOwnProperty("emissionColorLocation")) gl.uniform4fv(locations.emissionColorLocation, new Float32Array(drawInfo.emissionColor));
 
+    // Lights params
+    if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation, new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
     if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
     if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation, assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
 
+    // Raycasting params
     if (locations.hasOwnProperty("electronRadiusLocation")) gl.uniform1f(locations.electronRadiusLocation, assetsData[AssetType.ELECTRON].other.asset_radius);
+    if (locations.hasOwnProperty("rayCastingLocation")) gl.uniform1f(locations.rayCastingLocation, rayCastingActive);
 
-    if (locations.hasOwnProperty("specShineLocation")) gl.uniform1f(locations.specShineLocation, assetsData[AssetType.ELECTRON].drawInfo.specShine);
+    // BRDF
+    if (locations.hasOwnProperty("diffuseModeLocation")) gl.uniform1f(locations.diffuseModeLocation, diffuseMode);
+    if (locations.hasOwnProperty("specularModeLocation")) gl.uniform1f(locations.specularModeLocation, specularMode);
+    if (locations.hasOwnProperty("specShineLocation")) gl.uniform1f(locations.specShineLocation, drawInfo.specShine);
+    if (locations.hasOwnProperty("sigmaLocation")) gl.uniform1f(locations.sigmaLocation, drawInfo.sigma*drawInfo.sigma);
 }
 
 function drawScene() {
@@ -146,4 +154,67 @@ async function init() {
     main();
 }
 
-window.onresize = resizeCanvas;
+window.onresize = resizeCanvas
+
+function cameraOutsideInside() {
+    let cameraPos = camera.getWorldPosition();
+    if (cameraPos[0] === 0.0 && cameraPos[1] === 0.0 && cameraPos[2] === 0.0) {
+        camera.viewFromZ();
+        objectsToRender.unshift(atom);
+    } else {
+        camera.setPosition({x: 0.0, y: 0.0, z: 0.0});
+        objectsToRender.splice(0, 1);
+    }
+}
+
+function changeAmbientLight(value) {
+    if (value >= 0.0 && value <= 1.0) ambientLight = value;
+}
+
+function toggleFloor() {
+    let floor = null;
+    let index;
+
+    for(index = 0; index < objectsToRender.length; index++){
+        if (objectsToRender[index].assetType === AssetType.FLOOR) {
+            floor = objectsToRender[index];
+            break;
+        }
+    }
+
+    if (floor) {
+        objectsToRender.splice(index, 1);
+    } else {
+        objectsToRender.push(new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords));
+    }
+}
+
+function setElectronLightTarget(value) {
+    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = value;
+}
+
+function setElectronLightDecay(value) {
+    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = value;
+}
+
+function setSpecShine(value) {
+    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    for(let type of types) assetsData[type].drawInfo.specShine = value;
+}
+
+function setSigma(value) {
+    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    for(let type of types) assetsData[type].drawInfo.sigma = value;
+}
+
+function toggleRayCasting() {
+    rayCastingActive = rayCastingActive ? 0.0 : 1.0;
+}
+
+function setDiffuseMode(mode) {
+    diffuseMode = mode;
+}
+
+function setSpecularMode(mode) {
+    specularMode = mode;
+}

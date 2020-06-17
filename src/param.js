@@ -1,6 +1,19 @@
+let Diffuse = {
+    NO: 0.0,
+    LAMBERT: 1.0,
+    OREN_NAYAR: 2.0
+}
+
+let Specular = {
+    NO: 0.0,
+    PHONG: 1.0,
+    BLINN: 2.0
+}
+
 let gl;
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
+let atom = new SceneNode();
 
 let ambientLight = 0.25;
 
@@ -8,6 +21,11 @@ let objectsToRender = [];
 let nodesToAnimate = [];
 let lights = [];
 let camera = new Camera();
+let rayCastingActive = 1.0;
+let defaultSpecShine = 50.0;
+let defaultSigma = 1.5;
+let diffuseMode = Diffuse.OREN_NAYAR;
+let specularMode = Specular.NO;
 
 let paths = {
     base: "",
@@ -18,13 +36,11 @@ let paths = {
             atom: "/vs_Atom.glsl",
             electron: "/vs_Electron.glsl",
             floor: "/vs_Floor.glsl",
-            cube: "/vs_Cube.glsl"
         },
         fs: {
             atom: "/fs_Atom.glsl",
             electron: "/fs_Electron.glsl",
             floor: "/fs_Floor.glsl",
-            cube: "/fs_Cube.glsl"
         }
     },
     texture: "src/assets/texture.png"

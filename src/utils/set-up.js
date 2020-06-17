@@ -33,14 +33,12 @@ function initializePaths() {
         atom: paths.shaders.base + paths.shaders.vs.atom,
         electron: paths.shaders.base + paths.shaders.vs.electron,
         floor: paths.shaders.base + paths.shaders.vs.floor,
-        cube: paths.shaders.base + paths.shaders.vs.cube
     }
 
     paths.shaders.fs = {
         atom: paths.shaders.base + paths.shaders.fs.atom,
         electron: paths.shaders.base + paths.shaders.fs.electron,
         floor: paths.shaders.base + paths.shaders.fs.floor,
-        cube: paths.shaders.base + paths.shaders.fs.cube
     }
 }
 
@@ -61,7 +59,6 @@ async function loadPrograms() {
     assetsData[AssetType.CARBON].drawInfo.program = atomProgram;
     assetsData[AssetType.OXYGEN].drawInfo.program = atomProgram;
     assetsData[AssetType.FLOOR].drawInfo.program = await loadProgram(paths.shaders.vs.floor, paths.shaders.fs.floor);
-    assetsData[AssetType.CUBE].drawInfo.program = await loadProgram(paths.shaders.vs.cube, paths.shaders.fs.cube);
 }
 
 async function getStruct(path) {
@@ -131,11 +128,16 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
     if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation = gl.getUniformLocation(program, "electronRadius");
     if (locations.hasOwnProperty("eyePosLocation")) assetsData[assetType].drawInfo.locations.eyePosLocation = gl.getUniformLocation(program, "eyePos");
     if (locations.hasOwnProperty("specShineLocation")) assetsData[assetType].drawInfo.locations.specShineLocation = gl.getUniformLocation(program, "SpecShine");
+    if (locations.hasOwnProperty("rayCastingLocation")) assetsData[assetType].drawInfo.locations.rayCastingLocation = gl.getUniformLocation(program, "rayCasting");
+
+    if (locations.hasOwnProperty("sigmaLocation")) assetsData[assetType].drawInfo.locations.sigmaLocation = gl.getUniformLocation(program, "sigma_squared");
+    if (locations.hasOwnProperty("diffuseModeLocation")) assetsData[assetType].drawInfo.locations.diffuseModeLocation = gl.getUniformLocation(program, "diffuseMode");
+    if (locations.hasOwnProperty("specularModeLocation")) assetsData[assetType].drawInfo.locations.specularModeLocation = gl.getUniformLocation(program, "specularMode");
 
 }
 
 function loadAttribAndUniformsLocations() {
-    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN, AssetType.FLOOR, AssetType.CUBE];
+    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN, AssetType.FLOOR];
 
     for (let assetType of types){
         loadAttribAndUniformsLocationsForAsset(assetType);
@@ -180,5 +182,4 @@ function loadVaos() {
     loadVao(AssetType.CARBON);
     loadVao(AssetType.OXYGEN);
     loadVao(AssetType.FLOOR);
-    loadVao(AssetType.CUBE);
 }

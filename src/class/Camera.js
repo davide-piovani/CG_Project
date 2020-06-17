@@ -31,6 +31,15 @@ class Camera {
         return [this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, 1.0];
     }
 
+    setPosition = (cords) => {
+        if (cords){
+            if (cords.x !== null) this.viewInfo.x = cords.x;
+            if (cords.y !== null) this.viewInfo.y = cords.y;
+            if (cords.z !== null) this.viewInfo.z = cords.z;
+            this.updateViewMatrix();
+        }
+    }
+
     viewFromX = () => {
         this.viewInfo = {
             x: 2.0, y: 0.0, z: 0.0,

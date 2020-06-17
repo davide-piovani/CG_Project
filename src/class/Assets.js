@@ -5,8 +5,7 @@ let AssetType = {
     HELIUM: 3,
     CARBON: 4,
     OXYGEN: 5,
-    FLOOR: 6,
-    CUBE: 7
+    FLOOR: 6
 }
 
 let r = 1.0;
@@ -33,7 +32,6 @@ let assetsData = [
             vao: null,
             ambientColor: [0.97, 0.89, 0.05, 1.0],
             emissionColor: [0.97, 0.89, 0.05, 1.0],
-            specShine: 50.0,
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
@@ -42,12 +40,17 @@ let assetsData = [
             },
 
             locations: {
+                // Asset params
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
                 wvpMatrixLocation: null,
+
+                // Object params
                 ambientColorLocation: null,
+                emissionColorLocation: null,
+
+                // Lights params
                 ambientLightLocation: null,
-                emissionColorLocation: null
             }
         },
         other: {
@@ -72,20 +75,36 @@ let assetsData = [
             program: null,
             bufferLength: 0,
             vao: null,
+            specShine: defaultSpecShine,
+            sigma: defaultSigma,
+
             locations: {
+                // Asset params
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
+
+                // Object params
                 textureLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+
+                // Lights params
+                ambientLightLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+
+                // Raycasting params
                 electronRadiusLocation: null,
-                eyePosLocation: null,
-                specShineLocation: null
+                rayCastingLocation: null,
+
+                // BRDF
+                diffuseModeLocation: null,
+                specularModeLocation: null,
+                specShineLocation: null,
+                sigmaLocation: null,
+                eyePosLocation: null
             }
         },
         other: {
@@ -110,20 +129,36 @@ let assetsData = [
             program: null,
             bufferLength: 0,
             vao: null,
+            specShine: defaultSpecShine,
+            sigma: defaultSigma,
+
             locations: {
+                // Asset params
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
+
+                // Object params
                 textureLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+
+                // Lights params
+                ambientLightLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+
+                // Raycasting params
                 electronRadiusLocation: null,
-                eyePosLocation: null,
-                specShineLocation: null
+                rayCastingLocation: null,
+
+                // BRDF
+                diffuseModeLocation: null,
+                specularModeLocation: null,
+                specShineLocation: null,
+                sigmaLocation: null,
+                eyePosLocation: null
             }
         },
         other: {
@@ -150,20 +185,36 @@ let assetsData = [
             program: null,
             bufferLength: 0,
             vao: null,
+            specShine: defaultSpecShine,
+            sigma: defaultSigma,
+
             locations: {
+                // Asset params
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
+
+                // Object params
                 textureLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+
+                // Lights params
+                ambientLightLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+
+                // Raycasting params
                 electronRadiusLocation: null,
-                eyePosLocation: null,
-                specShineLocation: null
+                rayCastingLocation: null,
+
+                // BRDF
+                diffuseModeLocation: null,
+                specularModeLocation: null,
+                specShineLocation: null,
+                sigmaLocation: null,
+                eyePosLocation: null
             }
         },
         other: {
@@ -190,20 +241,36 @@ let assetsData = [
             program: null,
             bufferLength: 0,
             vao: null,
+            specShine: defaultSpecShine,
+            sigma: defaultSigma,
+
             locations: {
+                // Asset params
                 positionAttributeLocation: null,
                 normalsAttributeLocation: null,
                 uvAttributeLocation: null,
                 wvpMatrixLocation: null,
+
+                // Object params
                 textureLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
+
+                // Lights params
+                ambientLightLocation: null,
                 lightTargetLocation: null,
                 lightDecayLocation: null,
-                ambientLightLocation: null,
+                lightColorLocation: null,
+                lightPositionLocation: null,
+
+                // Raycasting params
                 electronRadiusLocation: null,
-                eyePosLocation: null,
-                specShineLocation: null
+                rayCastingLocation: null,
+
+                // BRDF
+                diffuseModeLocation: null,
+                specularModeLocation: null,
+                specShineLocation: null,
+                sigmaLocation: null,
+                eyePosLocation: null
             }
         },
         other: {
@@ -235,48 +302,5 @@ let assetsData = [
                 ambientColorLocation: null,
             },
         }
-    },
-
-    {
-        type: AssetType.CUBE,
-        defaultCords: {
-            s: 0.2,
-        },
-        structInfo: {
-            vertices: [
-                -1.0,-1.0,+1.0,
-                -1.0,+1.0,+1.0,
-                +1.0,+1.0,+1.0,
-                +1.0,-1.0,+1.0,
-
-                -1.0,-1.0,-1.0,
-                -1.0,+1.0,-1.0,
-                +1.0,+1.0,-1.0,
-                +1.0,-1.0,-1.0,
-            ],
-            normals: null,
-            indices: [  0, 1, 2, 0, 2, 3,
-                        0, 4, 1, 1, 4, 5,
-                        4, 7, 5, 5, 7, 6,
-                        6, 7, 2, 2, 7, 3,
-                        1, 2, 5, 2, 5, 6,
-                        0, 4, 3, 3, 4, 7],
-        },
-        drawInfo: {
-            program: null,
-            bufferLength: 0,
-            vao: null,
-            locations: {
-                positionAttributeLocation: null,
-                wvpMatrixLocation: null,
-                lightColorLocation: null,
-                lightPositionLocation: null,
-                lightTargetLocation: null,
-                lightDecayLocation: null,
-                ambientLightLocation: null
-            },
-        }
-    },
+    }
 ]
-
-//color: [0.97, 0.89, 0.05, 1.0]
