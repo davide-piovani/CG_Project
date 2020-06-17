@@ -122,6 +122,5 @@ void main() {
     vec4 specular = vec4(1.0, 1.0, 1.0, 1.0) * specular_contrib;
     vec4 ambient = objectColor * ambientLight;
 
-    //outColor = clamp(diffuse + specular + ambient, 0.0, 1.0);
-    outColor = vec4(0.0, 1.0, 0.0, 1.0);
+    outColor = clamp(diffuse + specular + ambient, 0.0, 1.0);
 }
