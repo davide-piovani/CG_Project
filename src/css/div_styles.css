@@ -1,0 +1,13 @@
+div.left {
+    /*width: 200px;*/
+    float: left;
+}
+
+div.right {
+    /*margin-left: 220px;*/
+    /*margin-top: 20px;*/
+}
+
+div.clear {
+    clear: both;
+}

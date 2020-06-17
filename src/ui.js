@@ -1,6 +1,9 @@
 let mouseClicked = false;
 let commandClicked = false;
 let buttons;
+let axis_container;
+let left_block_container, right_block_container;
+let raycast_button;
 
 function buttonController(assetType)
 {
@@ -38,6 +41,26 @@ function setCamera(code)
 {
     switch (code)
     {
+        case 'in':
+            axis_container.style.display = "none";
+            // buttons.namedItem("axis_x").display = "none";
+            // buttons.namedItem("axis_y").display = "none";
+            // buttons.namedItem("axis_z").display = "none";
+            buttons.namedItem("outside_camera").style.backgroundColor = "#1199EE";
+            buttons.namedItem("inside_camera").style.backgroundColor = "red";
+            break;
+        case 'out':
+            axis_container.style.display = "inherit";
+            buttons.namedItem("axis_x").display = "inherit";
+            buttons.namedItem("axis_y").display = "inherit";
+            buttons.namedItem("axis_z").display = "inherit";
+            buttons.namedItem("outside_camera").style.backgroundColor = "red";
+            buttons.namedItem("inside_camera").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_x").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
+            buttons.namedItem("axis_z").style.backgroundColor = "red";
+            camera.viewFromZ();
+            break;
         case 'x':
             camera.viewFromX();
             buttons.namedItem("axis_x").style.backgroundColor = "red";
@@ -57,6 +80,21 @@ function setCamera(code)
             buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_z").style.backgroundColor = "red";
             break;
+    }
+}
+
+function toggleRaycast() {
+    if(raycast_button.innerText === "Active")
+    {
+        raycast_button.innerText = "Not active";
+        raycast_button.style.backgroundColor = "#1199EE";
+        // DEACTIVATE RAYCAST
+    }
+    else
+    {
+        raycast_button.innerText = "Active";
+        raycast_button.style.backgroundColor = "red";
+        // ACTIVATE RAYCAST
     }
 }
 
@@ -126,6 +164,16 @@ function setUpUI() {
     buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
     buttons.namedItem("H").style.backgroundColor = "red";
     buttons.namedItem("axis_z").style.backgroundColor = "red";
+    axis_container = document.getElementById("outer_camera_container");
+    buttons.namedItem("outside_camera").style.backgroundColor = "red";
+    left_block_container = document.getElementById("left_block_container");
+    right_block_container = document.getElementById("right_block_container");
+    raycast_button = document.getElementById("toggle_raycasting");
+    raycast_button.style.backgroundColor = "red";
+
+    left_block_container.style.width = "window.innerWidth-300";
+    right_block_container.style.width = "300";
+    right_block_container.style.marginLeft = "window.innerWidth - 300 + 20";
 }
 
 window.addEventListener("keydown", keyDown, false);
