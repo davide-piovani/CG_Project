@@ -26,6 +26,7 @@ let objectsToRender = [];
 let nodesToAnimate = [];
 let lights = [];
 let camera = new Camera();
+let cameraVelocity = 1.0;
 let rayCastingActive = 1.0;
 let defaultSpecShine = 50.0;
 let defaultSigma = 1.5;
