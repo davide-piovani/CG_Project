@@ -157,17 +157,6 @@ async function init() {
 
 window.onresize = resizeCanvas
 
-function cameraOutsideInside() {
-    let cameraPos = camera.getWorldPosition();
-    if (cameraPos[0] === 0.0 && cameraPos[1] === 0.0 && cameraPos[2] === 0.0) {
-        camera.viewFromZ();
-        objectsToRender.unshift(atom);
-    } else {
-        camera.setPosition({x: 0.0, y: 0.0, z: 0.0});
-        objectsToRender.splice(0, 1);
-    }
-}
-
 function changeAmbientLight(value) {
     if (value >= 0.0 && value <= 1.0) ambientLight = value;
 }
