@@ -7,6 +7,8 @@ let raycast_button;
 let floor_button;
 let no_diffuse_light_button, lambert_diffuse_button, oren_neyar_diffuse_button;
 let no_specular_button, phong_specular_button, blinn_specular_button;
+let sigma, sigma_container;
+let g_slider, decay_slider;
 
 function buttonController(assetType)
 {
@@ -51,7 +53,7 @@ function setCamera(code)
             // buttons.namedItem("axis_z").display = "none";
             buttons.namedItem("outside_camera").style.backgroundColor = "#1199EE";
             buttons.namedItem("inside_camera").style.backgroundColor = "red";
-            cameraOutsideInside();
+            camera.setMode(camera.Mode.INSIDE);
             break;
         case 'out':
             axis_container.style.display = "inherit";
@@ -63,7 +65,7 @@ function setCamera(code)
             buttons.namedItem("axis_x").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_z").style.backgroundColor = "red";
-            cameraOutsideInside();
+            camera.setMode(camera.Mode.OUTSIDE);
             camera.viewFromZ();
             break;
         case 'x':
@@ -130,12 +132,14 @@ function diffuseLightChooser(code)
             no_diffuse_light_button.style.backgroundColor = "red";
             lambert_diffuse_button.style.backgroundColor = "#1199EE";
             oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
+            sigma_container.style.display = "none";
             setDiffuseMode(Diffuse.NO);
             break;
         case Diffuse.LAMBERT:
             no_diffuse_light_button.style.backgroundColor = "#1199EE";
             lambert_diffuse_button.style.backgroundColor = "red";
             oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
+            sigma_container.style.display = "none";
             setDiffuseMode(Diffuse.LAMBERT);
             break;
         case Diffuse.OREN_NAYAR:
@@ -143,6 +147,9 @@ function diffuseLightChooser(code)
             lambert_diffuse_button.style.backgroundColor = "#1199EE";
             oren_neyar_diffuse_button.style.backgroundColor = "red";
             setDiffuseMode(Diffuse.OREN_NAYAR);
+            sigma_container.style.display = "inherit";
+            sigma.value = defaultSigma;
+            setSigma(defaultSigma);
             break;
     }
 }
@@ -153,20 +160,20 @@ function specularChooser(code)
     {
         case Specular.NO:
             no_specular_button.style.backgroundColor = "red";
-            phong_specular_button.style.backgroundColor = "#1199EE"
+            phong_specular_button.style.backgroundColor = "#1199EE";
             blinn_specular_button.style.backgroundColor = "#1199EE";
             setSpecularMode(Specular.NO);
             break;
         case Specular.PHONG:
             no_specular_button.style.backgroundColor = "#1199EE";
-            phong_specular_button.style.backgroundColor = "red"
-            blinn_specular_button.style.backgroundColor = "#1199EE"
+            phong_specular_button.style.backgroundColor = "red";
+            blinn_specular_button.style.backgroundColor = "#1199EE";
             setSpecularMode(Specular.PHONG);
             break;
         case Specular.BLINN:
             no_specular_button.style.backgroundColor = "#1199EE";
-            phong_specular_button.style.backgroundColor = "#1199EE"
-            blinn_specular_button.style.backgroundColor = "red"
+            phong_specular_button.style.backgroundColor = "#1199EE";
+            blinn_specular_button.style.backgroundColor = "red";
             setDiffuseMode(Specular.BLINN);
             break;
     }
@@ -245,9 +252,25 @@ function mouseMove(e) {
     }
 }
 
+function refreshSigmaValue()
+{
+    setSigma(sigma.value);
+}
+
+function refreshElectronValue(code) {
+    if(code === 'g')
+        assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = g_slider.value;
+    else
+        assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = decay_slider.value;
+}
+
 function setUpUI() {
     init();
 
+    sigma = document.getElementById("sigma");
+    sigma_container = document.getElementById("sigma_container");
+    let canvas = document.getElementById("canvas");
+    canvas.onmousemove = mouseMove;
     buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
     buttons.namedItem("H").style.backgroundColor = "red";
     buttons.namedItem("axis_z").style.backgroundColor = "red";
@@ -259,6 +282,7 @@ function setUpUI() {
     raycast_button.style.backgroundColor = "red";
     floor_button = document.getElementById("toggle_floor");
     //toggleFloorUI();
+    floor_button.style.backgroundColor = "red"
     no_diffuse_light_button = document.getElementById("no_diffuse_light");
     lambert_diffuse_button = document.getElementById("lambert_diffuse_light");
     oren_neyar_diffuse_button = document.getElementById("oren_neyar_diffuse_light");
@@ -266,7 +290,14 @@ function setUpUI() {
     no_specular_button = document.getElementById("no_specular_light");
     phong_specular_button = document.getElementById("phong_specular_light");
     blinn_specular_button = document.getElementById("blinn_specular_light");
+    decay_slider = document.getElementById("decay_slider");
+    g_slider = document.getElementById("g_slider");
     specularChooser(specularMode);
+
+    g_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g;
+    decay_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay;
+    refreshElectronValue('g');
+    refreshElectronValue('d');
 
     left_block_container.style.width = "window.innerWidth-300";
     right_block_container.style.width = "300";
@@ -277,6 +308,5 @@ window.addEventListener("keydown", keyDown, false);
 window.addEventListener("keyup", keyUp, false);
 window.onmousedown = () => {mouseClicked = true};
 window.onmouseup = () => {mouseClicked = false};
-window.onmousemove = mouseMove;
 window.onload = setUpUI;
 

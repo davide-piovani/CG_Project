@@ -74,7 +74,7 @@
                             </div>
                             <div style="float: right; margin-right: 100px" id="toggle_floor_container">
                                 <p class="titles">Floor:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleFloorUI()">Not active</button>
+                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleFloorUI()">Active</button>
                             </div>
                         </div>
                     </div>
@@ -85,6 +85,10 @@
                         <button style="margin: 2px; margin-left: 0px;" id="no_diffuse_light"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.NO)">No</button>
                         <button style="margin: 2px; margin-left: 0px;" id="lambert_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.LAMBERT)">Lambert</button>
                         <button style="margin: 2px; margin-left: 0px;" id="oren_neyar_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.OREN_NAYAR)">Oren-Neyar</button>
+                        <div id="sigma_container">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px">sigma:</p>
+                            <input onmouseup="refreshSigmaValue()" oninput="refreshSigmaValue()" style="display: inherit" id="sigma" style="float: right" type="range" max="1.5707" value="0" step="0.0001">
+                        </div>
                     </div>
 
                     <div style="float: left" id="specular_light_type_container" name="light_type_container">
@@ -94,6 +98,15 @@
                         <button style="margin: 2px; margin-left: 0px;" id="blinn_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.BLINN)">Blinn</button>
                     </div>
 
+                    <div style="float: left" id="electron_light_container" name="light_type_container">
+                        <p class="titles">Electron light:</p>
+                        <div style="float: left;">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px;">g value: </p><input id="g_slider" oninput="refreshElectronValue('g')" onmouseup="refreshElectronValue('g')" style="float: right" type="range" max="6" value="3" step="0.1">
+                        </div>
+                        <div style="margin-left: 140px">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px">decay: </p><input oninput="refreshElectronValue('d')" onmouseup="refreshElectronValue('d')" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
+                        </div>
+                    </div>
 
                 </div>
             </div>
