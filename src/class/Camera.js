@@ -64,9 +64,10 @@ class Camera {
     }
 
     setMode = (mode) => {
+        if (mode === this.mode) return;
         this.mode = mode;
 
-        if (this.Mode === this.Mode.OUTSIDE) {
+        if (this.mode === this.Mode.OUTSIDE) {
             camera.viewFromZ();
             objectsToRender.unshift(atom);
         } else {

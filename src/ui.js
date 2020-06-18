@@ -66,7 +66,6 @@ function setCamera(code)
             buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_z").style.backgroundColor = "red";
             camera.setMode(camera.Mode.OUTSIDE);
-            camera.viewFromZ();
             break;
         case 'x':
             camera.viewFromX();
