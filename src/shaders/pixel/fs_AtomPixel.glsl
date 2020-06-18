@@ -13,7 +13,7 @@ uniform vec4 light_color[8];
 uniform vec3 light_pos[8];
 uniform float light_g;
 uniform float light_decay;
-uniform float electronRadius;
+uniform float electronRadius_squared;
 uniform float rayCasting;
 uniform vec3 eyePos;
 uniform float SpecShine;
@@ -24,7 +24,7 @@ uniform float specularMode;     //0.0 -> no specular, 1.0 -> Phong,   2.0 Blinn
 
 out vec4 outColor;
 
-bool lightHitObject(vec3 rayStartPoint, vec3 rayNormalisedDir, vec3 sphereCentre, float electronRadius_squared) {
+bool lightHitObject(vec3 rayStartPoint, vec3 rayNormalisedDir, vec3 sphereCentre) {
     vec3 l = sphereCentre - rayStartPoint;
     float l_squared = l.x*l.x + l.y*l.y + l.z*l.z;
 
@@ -42,10 +42,10 @@ bool isLightOn(vec4 light) {
     return !(light.r == 0.0 && light.g == 0.0 && light.b == 0.0);
 }
 
-bool lightIlluminateObject(int i, vec3 lightDir, float electronRadius_squared) {
+bool lightIlluminateObject(int i, vec3 lightDir) {
     for(int k = 0; k < 8; k++){
         if (k != i && isLightOn(light_color[k])) {
-            bool hit = lightHitObject(light_pos[i], lightDir, light_pos[k], electronRadius_squared);
+            bool hit = lightHitObject(light_pos[i], lightDir, light_pos[k]);
             if (hit) return false;
         }
     }
@@ -90,8 +90,6 @@ float blinnSpecular(vec3 eyeDir, vec3 lightDir) {
 }
 
 void main() {
-    float electronRadius_squared = pow(electronRadius, 2.0);
-
     vec4 objectColor = texture(u_texture, uvFS);
 
     vec4 diffuse_contrib = vec4(0.0, 0.0, 0.0, 0.0);
@@ -100,7 +98,7 @@ void main() {
     for(int i = 0; i < 8; i++) {
         vec3 lightDir = normalize(light_pos[i] - fs_pos);
 
-        if (rayCasting == 1.0 && !lightIlluminateObject(i, lightDir, electronRadius_squared)) continue;
+        if (rayCasting == 1.0 && !lightIlluminateObject(i, lightDir)) continue;
 
         vec4 lightColor = pointLight(i);
         vec3 eyeDir = normalize(eyePos - fs_pos);

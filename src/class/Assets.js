@@ -19,7 +19,7 @@ let assetsData = [
     {
         type: AssetType.ELECTRON,
         defaultCords: {
-            s: 0.25
+            s: 0.15
         },
         structInfo: {
             vertices: null,

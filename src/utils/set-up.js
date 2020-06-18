@@ -137,7 +137,7 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
         if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation.push(gl.getUniformLocation(program, "light_pos"));
 
         // Raycasting params
-        if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation.push(gl.getUniformLocation(program, "electronRadius"));
+        if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation.push(gl.getUniformLocation(program, "electronRadius_squared"));
         if (locations.hasOwnProperty("rayCastingLocation")) assetsData[assetType].drawInfo.locations.rayCastingLocation.push(gl.getUniformLocation(program, "rayCasting"));
 
         // BRDF
@@ -204,4 +204,10 @@ function loadVaos() {
     loadVao(AssetType.OXYGEN, Smooth.PIXEL);
     
     loadVao(AssetType.FLOOR);
+}
+
+function initElectronRadiusSquared() {
+    let rad_world = assetsData[AssetType.ELECTRON].other.asset_radius * assetsData[AssetType.ELECTRON].defaultCords.s;
+    let rad_object = rad_world / assetsData[AssetType.HYDROGEN].defaultCords.s;
+    assetsData[AssetType.ELECTRON].other.asset_radius = rad_object*rad_object;
 }

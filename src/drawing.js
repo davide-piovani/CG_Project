@@ -148,7 +148,7 @@ async function init() {
     await loadAssetsStruct();
     loadTexture();
 
-    //assetsData[AssetType.ELECTRON].other.asset_radius *= assetsData[AssetType.ELECTRON].defaultCords.s;
+    initElectronRadiusSquared();
 
     setAtom(AssetType.HYDROGEN);
 
