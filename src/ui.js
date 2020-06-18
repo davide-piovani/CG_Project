@@ -9,6 +9,8 @@ let no_diffuse_light_button, lambert_diffuse_button, oren_neyar_diffuse_button;
 let no_specular_button, phong_specular_button, blinn_specular_button;
 let sigma, sigma_container;
 let g_slider, decay_slider;
+let gamma_slider, gamma_container;
+let vertex_button, pixel_button;
 
 function buttonController(assetType)
 {
@@ -162,20 +164,31 @@ function specularChooser(code)
             phong_specular_button.style.backgroundColor = "#1199EE";
             blinn_specular_button.style.backgroundColor = "#1199EE";
             specularMode = Specular.NO;
+            gamma_container.style.display = "none";
             break;
         case Specular.PHONG:
             no_specular_button.style.backgroundColor = "#1199EE";
             phong_specular_button.style.backgroundColor = "red";
             blinn_specular_button.style.backgroundColor = "#1199EE";
             specularMode = Specular.PHONG;
+            gammaScroll();
+            gamma_container.style.display = "inherit";
             break;
         case Specular.BLINN:
             no_specular_button.style.backgroundColor = "#1199EE";
             phong_specular_button.style.backgroundColor = "#1199EE";
             blinn_specular_button.style.backgroundColor = "red";
             specularMode = Specular.BLINN;
+            gammaScroll();
+            gamma_container.style.display = "inherit";
             break;
     }
+}
+
+function gammaScroll()
+{
+    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    for(let type of types) assetsData[type].drawInfo.specShine = gamma_slider.value;
 }
 
 function keyDown(e) {
@@ -267,11 +280,30 @@ function refreshElectronValue(code) {
         assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = decay_slider.value;
 }
 
+function toggleSmoothShading(value)
+{
+    if(value === Smooth.PIXEL)
+    {
+        smoothType = Smooth.PIXEL;
+        pixel_button.style.backgroundColor = "red";
+        vertex_button.style.backgroundColor = "#1199EE";
+    }
+    else
+    {
+        smoothType = Smooth.VERTEX;
+        pixel_button.style.backgroundColor = "#1199EE";
+        vertex_button.style.backgroundColor = "red";
+    }
+}
+
 function setUpUI() {
     init();
-
+    gamma_slider = document.getElementById("specular_slider");
     sigma = document.getElementById("sigma");
     sigma_container = document.getElementById("sigma_container");
+    gamma_container = document.getElementById("specular_scroll_container");
+    pixel_button = document.getElementById("pixel_shading_button");
+    vertex_button = document.getElementById("vertex_shading_button");
     let canvas = document.getElementById("canvas");
     canvas.onmousemove = mouseMove;
     buttons = document.getElementsByClassName("pushy__btn pushy__btn--sm pushy__btn--blue");
@@ -299,8 +331,14 @@ function setUpUI() {
 
     g_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g;
     decay_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay;
+    gamma_slider.value = defaultSpecShine;
+
+
     refreshElectronValue('g');
     refreshElectronValue('d');
+    gammaScroll();
+
+    toggleSmoothShading(smoothType);
 
     left_block_container.style.width = "window.innerWidth-300";
     right_block_container.style.width = "300";
