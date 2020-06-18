@@ -66,12 +66,11 @@ class Camera {
     setMode = (mode) => {
         this.mode = mode;
 
-        let cameraPos = this.getWorldPosition();
-        if (cameraPos[0] === 0.0 && cameraPos[1] === 0.0 && cameraPos[2] === 0.0) {
+        if (this.Mode === this.Mode.OUTSIDE) {
             camera.viewFromZ();
             objectsToRender.unshift(atom);
         } else {
-            camera.setPosition({x: 0.0, y: 0.0, z: 0.0});
+            camera.setPosition({x: 0.0, y: 0.0, z: 0.0, elev: 0.0, angle: 0.0});
             objectsToRender.splice(0, 1);
         }
     }
@@ -89,12 +88,17 @@ class Camera {
     }
 
     Magnitude = {
-        FORWARD:  +1.0,
-        BACKWARD: -1.0
+        FORWARD:    +1.0,
+        BACKWARD:   -1.0,
+        LEFT:       +1.0,
+        RIGHT:      -1.0,
+        ROT_UP:     +1.0,
+        ROT_DOWN:   -1.0,
+        ROT_LEFT:   +1.0,
+        ROT_RIGHT:  -1.0,
     }
 
-    moveInDirection = (magnitude) => {
-        let cameraDir = this.getDir();
+    moveInDirection = (cameraDir, magnitude) => {
         let translateVector = [magnitude*cameraDir[0]*cameraVelocity, magnitude*cameraDir[1]*cameraVelocity, magnitude*cameraDir[2]*cameraVelocity];
         let translateMatrix = utils.MakeTranslateMatrix(translateVector[0], translateVector[1], translateVector[2]);
         let newPos = utils.multiplyMatrixVector(translateMatrix, this.getWorldPosition());
@@ -103,10 +107,44 @@ class Camera {
     }
 
     moveBackward = () => {
-        this.moveInDirection(this.Magnitude.BACKWARD);
+        if (this.mode !== this.Mode.OUTSIDE) return;
+        let cameraDir = this.getDir();
+        this.moveInDirection(cameraDir, this.Magnitude.BACKWARD);
     }
 
     moveForward = () => {
-        this.moveInDirection(this.Magnitude.FORWARD);
+        if (this.mode !== this.Mode.OUTSIDE) return;
+        let cameraDir = this.getDir();
+        this.moveInDirection(cameraDir, this.Magnitude.FORWARD);
+    }
+
+    moveLeft = () => {
+        if (this.mode !== this.Mode.OUTSIDE) return;
+        let cameraDir = this.getDir();
+        let leftDir = utils.multiplyMatrixVector(utils.MakeRotateYMatrix(90), [cameraDir[0], cameraDir[1], cameraDir[2], 1.0]);
+        this.moveInDirection([leftDir[0], leftDir[1], leftDir[2]], this.Magnitude.LEFT);
+    }
+
+    moveRight = () => {
+        if (this.mode !== this.Mode.OUTSIDE) return;
+        let cameraDir = this.getDir();
+        let leftDir = utils.multiplyMatrixVector(utils.MakeRotateYMatrix(90), [cameraDir[0], cameraDir[1], cameraDir[2], 1.0]);
+        this.moveInDirection([leftDir[0], leftDir[1], leftDir[2]], this.Magnitude.RIGHT);
+    }
+
+    rotateUp = () => {
+        this.setPosition({elev: this.viewInfo.elev + this.Magnitude.ROT_UP * cameraRotationVelocity});
+    }
+
+    rotateDown = () => {
+        this.setPosition({elev: this.viewInfo.elev + this.Magnitude.ROT_DOWN * cameraRotationVelocity});
+    }
+
+    rotateLeft = () => {
+        this.setPosition({angle: this.viewInfo.angle + this.Magnitude.ROT_LEFT * cameraRotationVelocity});
+    }
+
+    rotateRight = () => {
+        this.setPosition({angle: this.viewInfo.angle + this.Magnitude.ROT_RIGHT * cameraRotationVelocity});
     }
 }
