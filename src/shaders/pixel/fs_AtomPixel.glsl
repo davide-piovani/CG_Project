@@ -9,10 +9,12 @@ in vec2 uvFS;
 uniform sampler2D u_texture;
 uniform vec4 ambientLight;
 
-uniform vec4 light_color[8];
-uniform vec3 light_pos[8];
-uniform float light_g;
-uniform float light_decay;
+uniform vec3 directLightDir;
+uniform vec4 directLightColor;
+uniform vec4 pointLightColor[8];
+uniform vec3 pointLightPos[8];
+uniform float pointLightG;
+uniform float pointLightDecay;
 uniform float electronRadius_squared;
 uniform float rayCasting;
 uniform vec3 eyePos;
@@ -45,8 +47,8 @@ bool isLightOn(vec4 light) {
 
 bool lightIlluminateObject(int i, vec3 lightDir) {
     for(int k = 0; k < 8; k++){
-        if (k != i && isLightOn(light_color[k])) {
-            bool hit = lightHitObject(light_pos[i], lightDir, light_pos[k]);
+        if (k != i && isLightOn(pointLightColor[k])) {
+            bool hit = lightHitObject(pointLightPos[i], lightDir, pointLightPos[k]);
             if (hit) return false;
         }
     }
@@ -54,8 +56,8 @@ bool lightIlluminateObject(int i, vec3 lightDir) {
 }
 
 vec4 pointLight(int i) {
-    float decay_factor = pow(light_g / length(light_pos[i] - fs_pos), light_decay);
-    return decay_factor * light_color[i];
+    float decay_factor = pow(pointLightG / length(pointLightPos[i] - fs_pos), pointLightDecay);
+    return decay_factor * pointLightColor[i];
 }
 
 float lambertDiffuse(vec3 lightDir) {
@@ -90,32 +92,18 @@ float blinnSpecular(vec3 eyeDir, vec3 lightDir) {
     return pow(clamp(dot(normalize(eyeDir + lightDir), fs_normal),0.0,1.0), SpecShine);
 }
 
-void calculateDiffuseAndSpecularContribNight(inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
-    for(int i = 0; i < 8; i++) {
-        vec3 lightDir = normalize(light_pos[i] - fs_pos);
+void calculateDiffuseAndSpecularContrib(vec4 lightColor, vec3 lightDir, vec3 eyeDir, inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
+    float dif = 0.0;
+    float spec = 0.0;
 
-        if (rayCasting == 1.0 && !lightIlluminateObject(i, lightDir)) continue;
+    if (diffuseMode == 1.0) dif = lambertDiffuse(lightDir);
+    if (diffuseMode == 2.0) dif = orenNayarDiffuse(eyeDir, lightDir);
 
-        vec4 lightColor = pointLight(i);
-        vec3 eyeDir = normalize(eyePos - fs_pos);
+    if (specularMode == 1.0) spec = phongSpecular(eyeDir, lightDir);
+    if (specularMode == 2.0) spec = blinnSpecular(eyeDir, lightDir);
 
-        float dif = 0.0;
-        float spec = 0.0;
-
-        if (diffuseMode == 1.0) dif = lambertDiffuse(lightDir);
-        if (diffuseMode == 2.0) dif = orenNayarDiffuse(eyeDir, lightDir);
-
-        if (specularMode == 1.0) spec = phongSpecular(eyeDir, lightDir);
-        if (specularMode == 2.0) spec = blinnSpecular(eyeDir, lightDir);
-
-        diffuse_contrib = diffuse_contrib + dif * lightColor;
-        specular_contrib = specular_contrib + spec * lightColor;
-    }
-}
-
-void calculateDiffuseAndSpecularContribDay(inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
-    //diffuse_contrib = diffuse_contrib + vec4(0.5, 0.5, 0.5, 1.0);
-    //specular_contrib = specular_contrib + vec4(0.5, 0.5, 0.5, 1.0);
+    diffuse_contrib = diffuse_contrib + dif * lightColor;
+    specular_contrib = specular_contrib + spec * lightColor;
 }
 
 void main() {
@@ -123,9 +111,19 @@ void main() {
 
     vec4 diffuse_contrib = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 specular_contrib = vec4(0.0, 0.0, 0.0, 0.0);
+    vec3 eyeDir = normalize(eyePos - fs_pos);
 
-    if (isDay == 1.0) calculateDiffuseAndSpecularContribDay(diffuse_contrib, specular_contrib);
-    else calculateDiffuseAndSpecularContribNight(diffuse_contrib, specular_contrib);
+    if (isDay == 1.0) {
+        calculateDiffuseAndSpecularContrib(directLightColor, directLightDir, eyeDir, diffuse_contrib, specular_contrib);
+    } else {
+        for(int i = 0; i < 8; i++) {
+            vec3 lightDir = normalize(pointLightPos[i] - fs_pos);
+            if (rayCasting == 1.0 && !lightIlluminateObject(i, lightDir)) continue;
+
+            vec4 lightColor = pointLight(i);
+            calculateDiffuseAndSpecularContrib(lightColor, lightDir, eyeDir, diffuse_contrib, specular_contrib);
+        }
+    }
 
     vec4 diffuse = objectColor * diffuse_contrib;
     vec4 specular = vec4(1.0, 1.0, 1.0, 1.0) * specular_contrib;

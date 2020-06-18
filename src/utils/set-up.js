@@ -132,11 +132,13 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
 
         // Lights params
         if (locations.hasOwnProperty("isDayLocation")) assetsData[assetType].drawInfo.locations.isDayLocation.push(gl.getUniformLocation(program, "isDay"));
+        if (locations.hasOwnProperty("directLightDirectionLocation")) assetsData[assetType].drawInfo.locations.directLightDirectionLocation.push(gl.getUniformLocation(program, "directLightDir"));
+        if (locations.hasOwnProperty("directLightColorLocation")) assetsData[assetType].drawInfo.locations.directLightColorLocation.push(gl.getUniformLocation(program, "directLightColor"));
         if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation.push(gl.getUniformLocation(program, "ambientLight"));
-        if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation.push(gl.getUniformLocation(program, "light_g"));
-        if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation.push(gl.getUniformLocation(program, "light_decay"));
-        if (locations.hasOwnProperty("lightColorLocation")) assetsData[assetType].drawInfo.locations.lightColorLocation.push(gl.getUniformLocation(program, "light_color"));
-        if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation.push(gl.getUniformLocation(program, "light_pos"));
+        if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation.push(gl.getUniformLocation(program, "pointLightG"));
+        if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation.push(gl.getUniformLocation(program, "pointLightDecay"));
+        if (locations.hasOwnProperty("lightColorLocation")) assetsData[assetType].drawInfo.locations.lightColorLocation.push(gl.getUniformLocation(program, "pointLightColor"));
+        if (locations.hasOwnProperty("lightPositionLocation")) assetsData[assetType].drawInfo.locations.lightPositionLocation.push(gl.getUniformLocation(program, "pointLightPos"));
 
         // Raycasting params
         if (locations.hasOwnProperty("electronRadiusLocation")) assetsData[assetType].drawInfo.locations.electronRadiusLocation.push(gl.getUniformLocation(program, "electronRadius_squared"));

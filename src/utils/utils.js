@@ -36,6 +36,23 @@ createProgram:function(gl, vertexShader, fragmentShader) {
   }
 },
 
+	getDir:function(rotX, rotY) {
+		let threshold = 0.00001;
+
+		rotX *= (Math.PI / 180.0);
+		rotY *= (Math.PI / 180.0);
+
+		let x = - Math.sin(rotY);
+		let y = + Math.sin(rotX);
+		let z = - Math.cos(rotY) * Math.cos(rotX);
+
+		if (Math.abs(x) < threshold) x = 0.0;
+		if (Math.abs(y) < threshold) y = 0.0;
+		if (Math.abs(z) < threshold) z = 0.0;
+
+		return [x, y, z];
+	},
+
  resizeCanvasToDisplaySize:function(canvas) {
     const expandFullScreen = () => {
       canvas.width = window.innerWidth-300;

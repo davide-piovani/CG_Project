@@ -36,22 +36,6 @@ class Camera {
         return [this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, 1.0];
     }
 
-    getDir = () => {
-        let angle = this.viewInfo.angle * Math.PI / 180.0;
-        let elev = this.viewInfo.elev * Math.PI / 180.0;
-        let threshold = 0.00001;
-
-        let x = - Math.sin(angle);
-        let y = + Math.sin(elev);
-        let z = - Math.cos(angle) * Math.cos(elev);
-
-        if (Math.abs(x) < threshold) x = 0.0;
-        if (Math.abs(y) < threshold) y = 0.0;
-        if (Math.abs(z) < threshold) z = 0.0;
-
-        return [x, y, z];
-    }
-
     setPosition = (cords) => {
         if (cords){
             if (cords.x !== undefined) this.viewInfo.x = cords.x;
@@ -109,26 +93,26 @@ class Camera {
 
     moveBackward = () => {
         if (this.mode !== this.Mode.OUTSIDE) return;
-        let cameraDir = this.getDir();
+        let cameraDir = utils.getDir(this.viewInfo.elev, this.viewInfo.angle);
         this.moveInDirection(cameraDir, this.Magnitude.BACKWARD);
     }
 
     moveForward = () => {
         if (this.mode !== this.Mode.OUTSIDE) return;
-        let cameraDir = this.getDir();
+        let cameraDir = utils.getDir(this.viewInfo.elev, this.viewInfo.angle);
         this.moveInDirection(cameraDir, this.Magnitude.FORWARD);
     }
 
     moveLeft = () => {
         if (this.mode !== this.Mode.OUTSIDE) return;
-        let cameraDir = this.getDir();
+        let cameraDir = utils.getDir(this.viewInfo.elev, this.viewInfo.angle);
         let leftDir = utils.multiplyMatrixVector(utils.MakeRotateYMatrix(90), [cameraDir[0], cameraDir[1], cameraDir[2], 1.0]);
         this.moveInDirection([leftDir[0], leftDir[1], leftDir[2]], this.Magnitude.LEFT);
     }
 
     moveRight = () => {
         if (this.mode !== this.Mode.OUTSIDE) return;
-        let cameraDir = this.getDir();
+        let cameraDir = utils.getDir(this.viewInfo.elev, this.viewInfo.angle);
         let leftDir = utils.multiplyMatrixVector(utils.MakeRotateYMatrix(90), [cameraDir[0], cameraDir[1], cameraDir[2], 1.0]);
         this.moveInDirection([leftDir[0], leftDir[1], leftDir[2]], this.Magnitude.RIGHT);
     }

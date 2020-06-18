@@ -59,6 +59,8 @@ function loadUniforms(drawInfo, locations, i) {
 
     // Lights params
     if (locations.hasOwnProperty("isDayLocation")) gl.uniform1f(locations.isDayLocation[i], isDay);
+    if (locations.hasOwnProperty("directLightDirectionLocation")) gl.uniform3fv(locations.directLightDirectionLocation[i], new Float32Array(utils.getDir(directLightXRot, directLightYRot)));
+    if (locations.hasOwnProperty("directLightColorLocation")) gl.uniform4fv(locations.directLightColorLocation[i], new Float32Array(directLight));
     if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation[i], new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
     if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
     if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
@@ -201,13 +203,15 @@ function toggleSmooth() {
 function setDayLight(active) {
     //TODO: da modificare
     if (active) {
-        //assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color = [0, 0, 0, 0];
         assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0, 0, 0, 0];
+        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
+        ambientLight = 0.6;
         isDay = 1.0;
         console.log("Day");
     } else {
-        //assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color = [0.9, 0.9, 0.9, 1.0];
         assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0.97, 0.89, 0.05, 1.0];
+        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
+        ambientLight = 0.25;
         isDay = 0.0;
         console.log("Night");
     }

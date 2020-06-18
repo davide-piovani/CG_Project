@@ -17,7 +17,7 @@ let Smooth = {
 
 let gl;
 let isDay = 0.0;
-let dayCanvasColor = 1.0;
+let dayCanvasColor = 0.9;
 let nightCanvasColor = 0.0;
 
 let rootNode = new SceneNode();
@@ -33,6 +33,9 @@ let cameraVelocity = 0.1;
 let cameraRotationVelocity = 10.0;
 
 let ambientLight = 0.25;
+let directLight = [0.7, 0.7, 0.7, 1.0];
+let directLightXRot = 45.0;
+let directLightYRot = 225.0;
 let rayCastingActive = 1.0;
 let defaultSpecShine = 70.0;
 let defaultSigma = 0.7;

@@ -90,6 +90,8 @@ let assetsData = [
 
                 // Lights params
                 isDayLocation: [],
+                directLightDirectionLocation: [],
+                directLightColorLocation: [],
                 ambientLightLocation: [],
                 lightTargetLocation: [],
                 lightDecayLocation: [],
@@ -144,6 +146,9 @@ let assetsData = [
                 textureLocation: [],
 
                 // Lights params
+                isDayLocation: [],
+                directLightDirectionLocation: [],
+                directLightColorLocation: [],
                 ambientLightLocation: [],
                 lightTargetLocation: [],
                 lightDecayLocation: [],
@@ -200,6 +205,9 @@ let assetsData = [
                 textureLocation: [],
 
                 // Lights params
+                isDayLocation: [],
+                directLightDirectionLocation: [],
+                directLightColorLocation: [],
                 ambientLightLocation: [],
                 lightTargetLocation: [],
                 lightDecayLocation: [],
@@ -256,6 +264,9 @@ let assetsData = [
                 textureLocation: [],
 
                 // Lights params
+                isDayLocation: [],
+                directLightDirectionLocation: [],
+                directLightColorLocation: [],
                 ambientLightLocation: [],
                 lightTargetLocation: [],
                 lightDecayLocation: [],
@@ -296,6 +307,8 @@ let assetsData = [
             program: [],
             bufferLength: 0,
             vao: [],
+            dayColor: [0.0, 0.18, 0.79, 1.0],
+            nightColor: [0.0, 0.09, 0.37, 1.0],
             ambientColor: [0.0, 0.12, 0.5, 1.0],
             locations: {
                 positionAttributeLocation: [],
