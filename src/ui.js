@@ -5,6 +5,8 @@ let axis_container;
 let left_block_container, right_block_container;
 let raycast_button;
 let floor_button;
+let no_diffuse_light_button, lambert_diffuse_button, oren_neyar_diffuse_button;
+let no_specular_button, phong_specular_button, blinn_specular_button;
 
 function buttonController(assetType)
 {
@@ -49,6 +51,7 @@ function setCamera(code)
             // buttons.namedItem("axis_z").display = "none";
             buttons.namedItem("outside_camera").style.backgroundColor = "#1199EE";
             buttons.namedItem("inside_camera").style.backgroundColor = "red";
+            cameraOutsideInside();
             break;
         case 'out':
             axis_container.style.display = "inherit";
@@ -60,6 +63,7 @@ function setCamera(code)
             buttons.namedItem("axis_x").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_y").style.backgroundColor = "#1199EE";
             buttons.namedItem("axis_z").style.backgroundColor = "red";
+            cameraOutsideInside();
             camera.viewFromZ();
             break;
         case 'x':
@@ -89,28 +93,82 @@ function toggleRaycast() {
     {
         raycast_button.innerText = "Not active";
         raycast_button.style.backgroundColor = "#1199EE";
+        toggleRayCasting();
         // DEACTIVATE RAYCAST
     }
     else
     {
         raycast_button.innerText = "Active";
         raycast_button.style.backgroundColor = "red";
+        toggleRayCasting();
         // ACTIVATE RAYCAST
     }
 }
 
-function toggleFloor() {
+function toggleFloorUI() {
     if(floor_button.innerText === "Active")
     {
         floor_button.innerText = "Not active";
         floor_button.style.backgroundColor = "#1199EE";
+        toggleFloor();
         // DEACTIVATE FLOOR
     }
     else
     {
         floor_button.innerText = "Active";
         floor_button.style.backgroundColor = "red";
+        toggleFloor();
         // ACTIVATE FLOOR
+    }
+}
+
+function diffuseLightChooser(code)
+{
+    switch (code)
+    {
+        case Diffuse.NO:
+            no_diffuse_light_button.style.backgroundColor = "red";
+            lambert_diffuse_button.style.backgroundColor = "#1199EE";
+            oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
+            setDiffuseMode(Diffuse.NO);
+            break;
+        case Diffuse.LAMBERT:
+            no_diffuse_light_button.style.backgroundColor = "#1199EE";
+            lambert_diffuse_button.style.backgroundColor = "red";
+            oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
+            setDiffuseMode(Diffuse.LAMBERT);
+            break;
+        case Diffuse.OREN_NAYAR:
+            no_diffuse_light_button.style.backgroundColor = "#1199EE";
+            lambert_diffuse_button.style.backgroundColor = "#1199EE";
+            oren_neyar_diffuse_button.style.backgroundColor = "red";
+            setDiffuseMode(Diffuse.OREN_NAYAR);
+            break;
+    }
+}
+
+function specularChooser(code)
+{
+    switch (code)
+    {
+        case Specular.NO:
+            no_specular_button.style.backgroundColor = "red";
+            phong_specular_button.style.backgroundColor = "#1199EE"
+            blinn_specular_button.style.backgroundColor = "#1199EE";
+            setSpecularMode(Specular.NO);
+            break;
+        case Specular.PHONG:
+            no_specular_button.style.backgroundColor = "#1199EE";
+            phong_specular_button.style.backgroundColor = "red"
+            blinn_specular_button.style.backgroundColor = "#1199EE"
+            setSpecularMode(Specular.PHONG);
+            break;
+        case Specular.BLINN:
+            no_specular_button.style.backgroundColor = "#1199EE";
+            phong_specular_button.style.backgroundColor = "#1199EE"
+            blinn_specular_button.style.backgroundColor = "red"
+            setDiffuseMode(Specular.BLINN);
+            break;
     }
 }
 
@@ -123,18 +181,31 @@ function keyDown(e) {
 function keyUp(e){
     let actual = objectsToRender[0];
 
-    if (e.keyCode === 38 || e.keyCode === 37) {  // Up or Left arrow
+    if (e.keyCode === 38) {  // Up arrow
         if (actual.assetType > AssetType.HYDROGEN) setAtom(actual.assetType-1);
     }
-    if (e.keyCode === 40 || e.keyCode === 39) {  // Down or Right arrow
+    if (e.keyCode === 40) {  // Down arrow
+        if (actual.assetType < AssetType.OXYGEN) setAtom(actual.assetType+1);
+    }
+
+    if (e.keyCode === 37) {  // Left arrow
+        if (actual.assetType > AssetType.HYDROGEN) setAtom(actual.assetType-1);
+    }
+    if (e.keyCode === 39) {  // Right arrow
         if (actual.assetType < AssetType.OXYGEN) setAtom(actual.assetType+1);
     }
 
     if (e.keyCode === 87) {  // w
-        camera.moveForward(1.0);
+        camera.moveForward();
     }
     if (e.keyCode === 83) {  // s
-        camera.moveBack(1.0);
+        camera.moveBackward();
+    }
+    if (e.keyCode === 65) {  // a
+        camera.moveForward();
+    }
+    if (e.keyCode === 68) {  // d
+        camera.moveBackward();
     }
 
     if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
@@ -187,6 +258,15 @@ function setUpUI() {
     raycast_button = document.getElementById("toggle_raycasting");
     raycast_button.style.backgroundColor = "red";
     floor_button = document.getElementById("toggle_floor");
+    //toggleFloorUI();
+    no_diffuse_light_button = document.getElementById("no_diffuse_light");
+    lambert_diffuse_button = document.getElementById("lambert_diffuse_light");
+    oren_neyar_diffuse_button = document.getElementById("oren_neyar_diffuse_light");
+    diffuseLightChooser(diffuseMode);
+    no_specular_button = document.getElementById("no_specular_light");
+    phong_specular_button = document.getElementById("phong_specular_light");
+    blinn_specular_button = document.getElementById("blinn_specular_light");
+    specularChooser(specularMode);
 
     left_block_container.style.width = "window.innerWidth-300";
     right_block_container.style.width = "300";
