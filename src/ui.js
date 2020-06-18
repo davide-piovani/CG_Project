@@ -189,30 +189,17 @@ function keyUp(e){
     let actual = objectsToRender[0];
 
     if (e.keyCode === 38) {  // Up arrow
-        if (actual.assetType > AssetType.HYDROGEN) setAtom(actual.assetType-1);
+        camera.rotateUp();
     }
     if (e.keyCode === 40) {  // Down arrow
-        if (actual.assetType < AssetType.OXYGEN) setAtom(actual.assetType+1);
+       camera.rotateDown();
     }
 
     if (e.keyCode === 37) {  // Left arrow
-        if (actual.assetType > AssetType.HYDROGEN) setAtom(actual.assetType-1);
+        camera.rotateLeft();
     }
     if (e.keyCode === 39) {  // Right arrow
-        if (actual.assetType < AssetType.OXYGEN) setAtom(actual.assetType+1);
-    }
-
-    if (e.keyCode === 87) {  // w
-        camera.moveForward();
-    }
-    if (e.keyCode === 83) {  // s
-        camera.moveBackward();
-    }
-    if (e.keyCode === 65) {  // a
-        camera.moveForward();
-    }
-    if (e.keyCode === 68) {  // d
-        camera.moveBackward();
+        camera.rotateRight();
     }
 
     if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
@@ -238,6 +225,23 @@ function keyUp(e){
         actual.parent.resetPosition();
     }
 
+}
+
+function keyPress(e){
+    if (e.keyCode === 119) {  // w
+        camera.moveForward();
+    }
+
+    if (e.keyCode === 115) {  // s
+        camera.moveBackward();
+    }
+
+    if (e.keyCode === 97) {  // a
+        camera.moveLeft();
+    }
+    if (e.keyCode === 100) {  // d
+        camera.moveRight();
+    }
 }
 
 function mouseMove(e) {
@@ -306,6 +310,7 @@ function setUpUI() {
 
 window.addEventListener("keydown", keyDown, false);
 window.addEventListener("keyup", keyUp, false);
+window.addEventListener("keypress", keyPress, false);
 window.onmousedown = () => {mouseClicked = true};
 window.onmouseup = () => {mouseClicked = false};
 window.onload = setUpUI;
