@@ -96,6 +96,9 @@
                         <button style="margin: 2px; margin-left: 0px;" id="no_specular_light"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.NO)">No</button>
                         <button style="margin: 2px; margin-left: 0px;" id="phong_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.PHONG)">Phong</button>
                         <button style="margin: 2px; margin-left: 0px;" id="blinn_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.BLINN)">Blinn</button>
+                        <div id="specular_scroll_container">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: right" type="range" max="100" value="70" step="0.1">
+                        </div>
                     </div>
 
                     <div style="float: left" id="electron_light_container" name="light_type_container">
@@ -106,6 +109,12 @@
                         <div style="margin-left: 140px">
                             <p style="color: white; font-family: Helvetica; font-size: 10px">decay: </p><input oninput="refreshElectronValue('d')" onmouseup="refreshElectronValue('d')" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
                         </div>
+                    </div>
+
+                    <div style="float: left" id="smooth_shading_container" name="light_type_container">
+                        <p class="titles">Smooth shading:</p>
+                        <button style="margin: 2px; margin-left: 0px;" id="vertex_shading_button"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleSmoothShading(Smooth.VERTEX)">Vertex</button>
+                        <button style="margin: 2px; margin-left: 0px;" id="pixel_shading_button" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleSmoothShading(Smooth.PIXEL)">Pixel</button>
                     </div>
 
                 </div>
