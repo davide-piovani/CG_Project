@@ -19,6 +19,7 @@ uniform vec3 eyePos;
 uniform float SpecShine;
 uniform float sigma_squared;
 
+uniform float isDay;            //0 -> night, 1 -> day
 uniform float diffuseMode;      //0.0 -> no diffuse,  1.0 -> Lambert, 2.0 Oren-Nayar
 uniform float specularMode;     //0.0 -> no specular, 1.0 -> Phong,   2.0 Blinn
 
@@ -89,12 +90,7 @@ float blinnSpecular(vec3 eyeDir, vec3 lightDir) {
     return pow(clamp(dot(normalize(eyeDir + lightDir), fs_normal),0.0,1.0), SpecShine);
 }
 
-void main() {
-    vec4 objectColor = texture(u_texture, uvFS);
-
-    vec4 diffuse_contrib = vec4(0.0, 0.0, 0.0, 0.0);
-    vec4 specular_contrib = vec4(0.0, 0.0, 0.0, 0.0);
-
+void calculateDiffuseAndSpecularContribNight(inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
     for(int i = 0; i < 8; i++) {
         vec3 lightDir = normalize(light_pos[i] - fs_pos);
 
@@ -115,6 +111,21 @@ void main() {
         diffuse_contrib = diffuse_contrib + dif * lightColor;
         specular_contrib = specular_contrib + spec * lightColor;
     }
+}
+
+void calculateDiffuseAndSpecularContribDay(inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
+    //diffuse_contrib = diffuse_contrib + vec4(0.5, 0.5, 0.5, 1.0);
+    //specular_contrib = specular_contrib + vec4(0.5, 0.5, 0.5, 1.0);
+}
+
+void main() {
+    vec4 objectColor = texture(u_texture, uvFS);
+
+    vec4 diffuse_contrib = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 specular_contrib = vec4(0.0, 0.0, 0.0, 0.0);
+
+    if (isDay == 1.0) calculateDiffuseAndSpecularContribDay(diffuse_contrib, specular_contrib);
+    else calculateDiffuseAndSpecularContribNight(diffuse_contrib, specular_contrib);
 
     vec4 diffuse = objectColor * diffuse_contrib;
     vec4 specular = vec4(1.0, 1.0, 1.0, 1.0) * specular_contrib;

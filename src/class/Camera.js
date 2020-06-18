@@ -24,7 +24,7 @@ class Camera {
 
     updateProjectionMatrix = () => {
         //this.projectionMatrix = utils.MakeParallel(this.projectionInfo.w, this.projectionInfo.a, this.projectionInfo.n, this.projectionInfo.f);
-        this.projectionMatrix = projectionMatrix = utils.MakePerspective(this.projectionInfo.fieldOfView, this.projectionInfo.a, this.projectionInfo.n, this.projectionInfo.f);
+        this.projectionMatrix = utils.MakePerspective(this.projectionInfo.fieldOfView, this.projectionInfo.a, this.projectionInfo.n, this.projectionInfo.f);
     }
 
     setAspectRatio = (a) => {

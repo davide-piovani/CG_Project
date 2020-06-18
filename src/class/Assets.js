@@ -35,7 +35,7 @@ let assetsData = [
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
-                g: 3.0,
+                g: 4.0,
                 decay: 2.0
             },
 
@@ -55,7 +55,7 @@ let assetsData = [
         },
         other: {
             electron_velocity: 0.2,
-            asset_radius: 0.4
+            asset_radius: 1.6
         }
     },
 
@@ -89,6 +89,7 @@ let assetsData = [
                 textureLocation: [],
 
                 // Lights params
+                isDayLocation: [],
                 ambientLightLocation: [],
                 lightTargetLocation: [],
                 lightDecayLocation: [],

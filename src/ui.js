@@ -95,14 +95,14 @@ function toggleRaycast() {
     {
         raycast_button.innerText = "Not active";
         raycast_button.style.backgroundColor = "#1199EE";
-        toggleRayCasting();
+        rayCastingActive = 0.0;
         // DEACTIVATE RAYCAST
     }
     else
     {
         raycast_button.innerText = "Active";
         raycast_button.style.backgroundColor = "red";
-        toggleRayCasting();
+        rayCastingActive = 1.0;
         // ACTIVATE RAYCAST
     }
 }
@@ -133,22 +133,22 @@ function diffuseLightChooser(code)
             lambert_diffuse_button.style.backgroundColor = "#1199EE";
             oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
             sigma_container.style.display = "none";
-            setDiffuseMode(Diffuse.NO);
+            diffuseMode = Diffuse.NO;
             break;
         case Diffuse.LAMBERT:
             no_diffuse_light_button.style.backgroundColor = "#1199EE";
             lambert_diffuse_button.style.backgroundColor = "red";
             oren_neyar_diffuse_button.style.backgroundColor = "#1199EE";
             sigma_container.style.display = "none";
-            setDiffuseMode(Diffuse.LAMBERT);
+            diffuseMode = Diffuse.LAMBERT;
             break;
         case Diffuse.OREN_NAYAR:
             no_diffuse_light_button.style.backgroundColor = "#1199EE";
             lambert_diffuse_button.style.backgroundColor = "#1199EE";
             oren_neyar_diffuse_button.style.backgroundColor = "red";
-            setDiffuseMode(Diffuse.OREN_NAYAR);
             sigma_container.style.display = "inherit";
             sigma.value = defaultSigma;
+            diffuseMode = Diffuse.OREN_NAYAR;
             setSigma(defaultSigma);
             break;
     }
@@ -162,19 +162,19 @@ function specularChooser(code)
             no_specular_button.style.backgroundColor = "red";
             phong_specular_button.style.backgroundColor = "#1199EE";
             blinn_specular_button.style.backgroundColor = "#1199EE";
-            setSpecularMode(Specular.NO);
+            specularMode = Specular.NO;
             break;
         case Specular.PHONG:
             no_specular_button.style.backgroundColor = "#1199EE";
             phong_specular_button.style.backgroundColor = "red";
             blinn_specular_button.style.backgroundColor = "#1199EE";
-            setSpecularMode(Specular.PHONG);
+            specularMode = Specular.PHONG;
             break;
         case Specular.BLINN:
             no_specular_button.style.backgroundColor = "#1199EE";
             phong_specular_button.style.backgroundColor = "#1199EE";
             blinn_specular_button.style.backgroundColor = "red";
-            setDiffuseMode(Specular.BLINN);
+            specularMode = Specular.BLINN;
             break;
     }
 }

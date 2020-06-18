@@ -1,5 +1,6 @@
 function eraseCanvas() {
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    if (isDay) gl.clearColor(dayCanvasColor, dayCanvasColor, dayCanvasColor, 1.0);
+    else gl.clearColor(nightCanvasColor, nightCanvasColor, nightCanvasColor, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
@@ -130,6 +131,7 @@ function loadAttribAndUniformsLocationsForAsset(assetType) {
         if (locations.hasOwnProperty("emissionColorLocation")) assetsData[assetType].drawInfo.locations.emissionColorLocation.push(gl.getUniformLocation(program, "emitColor"));
 
         // Lights params
+        if (locations.hasOwnProperty("isDayLocation")) assetsData[assetType].drawInfo.locations.isDayLocation.push(gl.getUniformLocation(program, "isDay"));
         if (locations.hasOwnProperty("ambientLightLocation")) assetsData[assetType].drawInfo.locations.ambientLightLocation.push(gl.getUniformLocation(program, "ambientLight"));
         if (locations.hasOwnProperty("lightTargetLocation")) assetsData[assetType].drawInfo.locations.lightTargetLocation.push(gl.getUniformLocation(program, "light_g"));
         if (locations.hasOwnProperty("lightDecayLocation")) assetsData[assetType].drawInfo.locations.lightDecayLocation.push(gl.getUniformLocation(program, "light_decay"));

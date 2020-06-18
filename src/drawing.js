@@ -29,7 +29,7 @@ function setAtom(assetType) {
     // objectsToRender.push(electron2);
 
     for(let i = 0; i < asset.other.n_el; i++) {
-        let electronOrbit = new SceneNode(atomOrbit, null, {x: 1.0});
+        let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.707, z: 0.707});
         electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
         nodesToAnimate.push(electronOrbit);
 
@@ -58,6 +58,7 @@ function loadUniforms(drawInfo, locations, i) {
     if (locations.hasOwnProperty("emissionColorLocation")) gl.uniform4fv(locations.emissionColorLocation[i], new Float32Array(drawInfo.emissionColor));
 
     // Lights params
+    if (locations.hasOwnProperty("isDayLocation")) gl.uniform1f(locations.isDayLocation[i], isDay);
     if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation[i], new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
     if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
     if (locations.hasOwnProperty("lightDecayLocation")) gl.uniform1f(locations.lightDecayLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay);
@@ -179,13 +180,6 @@ function toggleFloor() {
     }
 }
 
-function setElectronLightTarget(value) {
-    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = value;
-}
-
-function setElectronLightDecay(value) {
-    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = value;
-}
 
 function setSpecShine(value) {
     let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
@@ -193,22 +187,28 @@ function setSpecShine(value) {
 }
 
 function setSigma(value) {
+    if (value < 0) value = 0.0;
+    if (value > Math.PI / 2.0) value = Math.PI / 2.0;
+
     let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
     for(let type of types) assetsData[type].drawInfo.sigma = value;
 }
 
-function toggleRayCasting() {
-    rayCastingActive = rayCastingActive ? 0.0 : 1.0;
-}
-
-function setDiffuseMode(mode) {
-    diffuseMode = mode;
-}
-
-function setSpecularMode(mode) {
-    specularMode = mode;
-}
-
 function toggleSmooth() {
     smoothType = smoothType === Smooth.VERTEX ? Smooth.PIXEL : Smooth.VERTEX;
+}
+
+function setDayLight(active) {
+    //TODO: da modificare
+    if (active) {
+        //assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color = [0, 0, 0, 0];
+        assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0, 0, 0, 0];
+        isDay = 1.0;
+        console.log("Day");
+    } else {
+        //assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color = [0.9, 0.9, 0.9, 1.0];
+        assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0.97, 0.89, 0.05, 1.0];
+        isDay = 0.0;
+        console.log("Night");
+    }
 }

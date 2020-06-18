@@ -16,21 +16,27 @@ let Smooth = {
 }
 
 let gl;
+let isDay = 0.0;
+let dayCanvasColor = 1.0;
+let nightCanvasColor = 0.0;
+
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
 let atom = new SceneNode();
 
-let ambientLight = 0.25;
-
 let objectsToRender = [];
 let nodesToAnimate = [];
 let lights = [];
+
 let camera = new Camera();
 let cameraVelocity = 0.1;
 let cameraRotationVelocity = 10.0;
+
+let ambientLight = 0.25;
 let rayCastingActive = 1.0;
-let defaultSpecShine = 50.0;
-let defaultSigma = 1.5;
+let defaultSpecShine = 70.0;
+let defaultSigma = 0.7;
+
 let diffuseMode = Diffuse.LAMBERT;
 let specularMode = Specular.BLINN;
 let smoothType = Smooth.PIXEL;
@@ -55,8 +61,6 @@ let paths = {
     },
     texture: "src/assets/texture.png"
 }
-
-let projectionMatrix = null;
 
 let trajectories = [
     (perc, r) => {  // 1
