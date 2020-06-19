@@ -36,6 +36,15 @@ class Camera {
         return [this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, 1.0];
     }
 
+    getWorldMatrix = () => {
+        return utils.MakeWorld(this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, this.viewInfo.elev, this.viewInfo.angle, 0.0, 1.0);
+    }
+
+    getCordsInObjectSpace = (inverseObjectMatrix) => {
+        let objectSpaceMatrix = utils.multiplyMatrices(inverseObjectMatrix, this.getWorldMatrix());
+        return utils.multiplyMatrixVector(objectSpaceMatrix, [this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, 1.0]);
+    }
+
     setPosition = (cords) => {
         if (cords){
             if (cords.x !== undefined) this.viewInfo.x = cords.x;

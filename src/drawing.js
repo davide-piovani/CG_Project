@@ -59,7 +59,6 @@ function loadUniforms(drawInfo, locations, i) {
 
     // Lights params
     if (locations.hasOwnProperty("isDayLocation")) gl.uniform1f(locations.isDayLocation[i], isDay);
-    if (locations.hasOwnProperty("directLightDirectionLocation")) gl.uniform3fv(locations.directLightDirectionLocation[i], new Float32Array(utils.getDir(directLightXRot, directLightYRot)));
     if (locations.hasOwnProperty("directLightColorLocation")) gl.uniform4fv(locations.directLightColorLocation[i], new Float32Array(directLight));
     if (locations.hasOwnProperty("ambientLightLocation")) gl.uniform4fv(locations.ambientLightLocation[i], new Float32Array([ambientLight, ambientLight, ambientLight, 1.0]));
     if (locations.hasOwnProperty("lightTargetLocation")) gl.uniform1f(locations.lightTargetLocation[i], assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g);
@@ -98,14 +97,13 @@ function drawScene() {
         let inverseWorldMatrix = utils.invertMatrix(sceneNode.worldMatrix);
 
         if (locations.hasOwnProperty("lightPositionLocation") && locations.hasOwnProperty("lightColorLocation")) {
-            let inverseObjectMatrix = inverseWorldMatrix;
             let electronLightColor = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.color;
             let lightPos = [];
             let lightCol = [];
 
             for(let i = 0; i < 8; i++){
                 if (lights[i]) {
-                    let lightObjectCords = lights[i].getCordsInObjectSpace(inverseObjectMatrix);
+                    let lightObjectCords = lights[i].getCordsInObjectSpace(inverseWorldMatrix);
                     lightPos.push(lightObjectCords[0], lightObjectCords[1], lightObjectCords[2]);
                     lightCol.push(electronLightColor[0], electronLightColor[1], electronLightColor[2], electronLightColor[3]);
                 } else {
@@ -119,10 +117,15 @@ function drawScene() {
         }
 
         if (locations.hasOwnProperty("eyePosLocation")) {
-            let eyePos = camera.getWorldPosition();
-            let matrix = utils.MakeScaleMatrix(1/0.2);
-            let objectEyePos = utils.multiplyMatrixVector(matrix, eyePos);
-            gl.uniform3fv(locations.eyePosLocation[index], new Float32Array([objectEyePos[0], objectEyePos[1], objectEyePos[2]]));
+            let eyePos = camera.getCordsInObjectSpace(inverseWorldMatrix);
+            gl.uniform3fv(locations.eyePosLocation[index], new Float32Array([eyePos[0], eyePos[1], eyePos[2]]));
+        }
+
+        if (locations.hasOwnProperty("directLightDirectionLocation")) {
+            let lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(sceneNode.worldMatrix));
+            let lightDir = utils.getDir(directLightXRot, directLightYRot);
+            let directionalLightTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, lightDir));
+            gl.uniform3fv(locations.directLightDirectionLocation[index], new Float32Array(directionalLightTransformed));
         }
 
         loadUniforms(assetsData[sceneNode.assetType].drawInfo, locations, index);
@@ -154,6 +157,7 @@ async function init() {
     initElectronRadiusSquared();
 
     setAtom(AssetType.HYDROGEN);
+    //console.log(assetsData);
 
     main();
 }
@@ -201,7 +205,6 @@ function toggleSmooth() {
 }
 
 function setDayLight(active) {
-    //TODO: da modificare
     if (active) {
         assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0, 0, 0, 0];
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;

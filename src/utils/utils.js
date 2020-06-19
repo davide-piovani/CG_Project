@@ -36,21 +36,50 @@ createProgram:function(gl, vertexShader, fragmentShader) {
   }
 },
 
-	getDir:function(rotX, rotY) {
-		let threshold = 0.00001;
+getDir:function(rotX, rotY) {
+	let threshold = 0.00001;
 
-		rotX *= (Math.PI / 180.0);
-		rotY *= (Math.PI / 180.0);
+	rotX *= (Math.PI / 180.0);
+	rotY *= (Math.PI / 180.0);
 
-		let x = - Math.sin(rotY);
-		let y = + Math.sin(rotX);
-		let z = - Math.cos(rotY) * Math.cos(rotX);
+	let x = - Math.sin(rotY);
+	let y = + Math.sin(rotX);
+	let z = - Math.cos(rotY) * Math.cos(rotX);
 
-		if (Math.abs(x) < threshold) x = 0.0;
-		if (Math.abs(y) < threshold) y = 0.0;
-		if (Math.abs(z) < threshold) z = 0.0;
+	if (Math.abs(x) < threshold) x = 0.0;
+	if (Math.abs(y) < threshold) y = 0.0;
+	if (Math.abs(z) < threshold) z = 0.0;
 
-		return [x, y, z];
+	return this.normalizeVector3([x, y, z]);
+},
+
+	normalizeVec3 : function(a) {
+
+		out = [];
+		var normV = Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+		out[0] = a[0]/normV;
+		out[1] = a[1]/normV;
+		out[2] = a[2]/normV;
+
+		return out;
+	},
+
+	multiplyMatrix3Vector3: function(m, a) {
+
+		out = [];
+		var x = a[0], y = a[1], z = a[2];
+		out[0] = x * m[0] + y * m[1] + z * m[2];
+		out[1] = x * m[3] + y * m[4] + z * m[5];
+		out[2] = x * m[6] + y * m[7] + z * m[8];
+		return out;
+	},
+
+	sub3x3from4x4: function(m){
+		out = [];
+		out[0] = m[0]; out[1] = m[1]; out[2] = m[2];
+		out[3] = m[4]; out[4] = m[5]; out[5] = m[6];
+		out[6] = m[8]; out[7] = m[9]; out[8] = m[10];
+		return out;
 	},
 
  resizeCanvasToDisplaySize:function(canvas) {

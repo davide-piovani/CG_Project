@@ -60,13 +60,13 @@ vec4 pointLight(int i) {
     return decay_factor * pointLightColor[i];
 }
 
-float lambertDiffuse(vec3 lightDir) {
-    return clamp(dot(lightDir, fs_normal), 0.0, 1.0);
+float lambertDiffuse(vec3 lightDir, vec3 norm) {
+    return clamp(dot(lightDir, norm), 0.0, 1.0);
 }
 
-float orenNayarDiffuse(vec3 eyeDir, vec3 lightDir) {
-    float theta_i = acos(dot(lightDir, fs_normal));
-    float theta_r = acos(dot(eyeDir, fs_normal));
+float orenNayarDiffuse(vec3 eyeDir, vec3 lightDir, vec3 norm) {
+    float theta_i = acos(dot(lightDir, norm));
+    float theta_r = acos(dot(eyeDir, norm));
 
     float alpha = max(theta_i, theta_r);
     float beta  = min(theta_i, theta_r);
@@ -74,39 +74,40 @@ float orenNayarDiffuse(vec3 eyeDir, vec3 lightDir) {
     float A = 1.0 - 0.5 * (sigma_squared / (sigma_squared+0.33));
     float B = 0.45 *  (sigma_squared / (sigma_squared+0.09));
 
-    vec3 Vi = normalize(lightDir - dot(lightDir, fs_normal)*fs_normal);
-    vec3 Vr = normalize(eyeDir - dot(eyeDir, fs_normal)*fs_normal);
+    vec3 Vi = normalize(lightDir - dot(lightDir, norm)*norm);
+    vec3 Vr = normalize(eyeDir - dot(eyeDir, norm)*norm);
 
     float G = max(0.0, dot(Vi, Vr));
-    float L = clamp(dot(lightDir, fs_normal), 0.0, 1.0);
+    float L = clamp(dot(lightDir, norm), 0.0, 1.0);
 
     return L * (A + B * G * sin(alpha) * tan(beta));
 }
 
-float phongSpecular(vec3 eyeDir, vec3 lightDir) {
-    vec3 r = 2.0 * dot(lightDir, fs_normal) * fs_normal - lightDir;
+float phongSpecular(vec3 eyeDir, vec3 lightDir, vec3 norm) {
+    vec3 r = 2.0 * dot(lightDir, norm) * norm - lightDir;
     return pow(clamp(dot(eyeDir, r),0.0,1.0), SpecShine);
 }
 
-float blinnSpecular(vec3 eyeDir, vec3 lightDir) {
-    return pow(clamp(dot(normalize(eyeDir + lightDir), fs_normal),0.0,1.0), SpecShine);
+float blinnSpecular(vec3 eyeDir, vec3 lightDir, vec3 norm) {
+    return pow(clamp(dot(normalize(eyeDir + lightDir), norm),0.0,1.0), SpecShine);
 }
 
-void calculateDiffuseAndSpecularContrib(vec4 lightColor, vec3 lightDir, vec3 eyeDir, inout vec4 diffuse_contrib, inout vec4 specular_contrib) {
+void calculateDiffuseAndSpecularContrib(vec4 lightColor, vec3 lightDir, vec3 eyeDir, inout vec4 diffuse_contrib, inout vec4 specular_contrib, vec3 norm) {
     float dif = 0.0;
     float spec = 0.0;
 
-    if (diffuseMode == 1.0) dif = lambertDiffuse(lightDir);
-    if (diffuseMode == 2.0) dif = orenNayarDiffuse(eyeDir, lightDir);
+    if (diffuseMode == 1.0) dif = lambertDiffuse(lightDir, norm);
+    if (diffuseMode == 2.0) dif = orenNayarDiffuse(eyeDir, lightDir, norm);
 
-    if (specularMode == 1.0) spec = phongSpecular(eyeDir, lightDir);
-    if (specularMode == 2.0) spec = blinnSpecular(eyeDir, lightDir);
+    if (specularMode == 1.0) spec = phongSpecular(eyeDir, lightDir, norm);
+    if (specularMode == 2.0) spec = blinnSpecular(eyeDir, lightDir, norm);
 
     diffuse_contrib = diffuse_contrib + dif * lightColor;
     specular_contrib = specular_contrib + spec * lightColor;
 }
 
 void main() {
+    vec3 norm = normalize(fs_normal);
     vec4 objectColor = texture(u_texture, uvFS);
 
     vec4 diffuse_contrib = vec4(0.0, 0.0, 0.0, 0.0);
@@ -114,14 +115,14 @@ void main() {
     vec3 eyeDir = normalize(eyePos - fs_pos);
 
     if (isDay == 1.0) {
-        calculateDiffuseAndSpecularContrib(directLightColor, directLightDir, eyeDir, diffuse_contrib, specular_contrib);
+        calculateDiffuseAndSpecularContrib(directLightColor, directLightDir, eyeDir, diffuse_contrib, specular_contrib, norm);
     } else {
         for(int i = 0; i < 8; i++) {
             vec3 lightDir = normalize(pointLightPos[i] - fs_pos);
             if (rayCasting == 1.0 && !lightIlluminateObject(i, lightDir)) continue;
 
             vec4 lightColor = pointLight(i);
-            calculateDiffuseAndSpecularContrib(lightColor, lightDir, eyeDir, diffuse_contrib, specular_contrib);
+            calculateDiffuseAndSpecularContrib(lightColor, lightDir, eyeDir, diffuse_contrib, specular_contrib, norm);
         }
     }
 

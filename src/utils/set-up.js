@@ -175,37 +175,33 @@ function loadIndexBuffer(data) {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 }
 
-function loadVao(assetType, i) {
-    let vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
-
+function loadVao(assetType) {
     let asset = assetsData[assetType];
     let structInfo = asset.structInfo;
     let locations = asset.drawInfo.locations;
     
-    if (!i) i = 0;
+    for(let i = 0; i < asset.drawInfo.program.length; i++){
+        let vao = gl.createVertexArray();
+        gl.bindVertexArray(vao);
 
-    loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation[i], 3);
-    if (locations.hasOwnProperty("normalsAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.normals), locations.normalsAttributeLocation[i], 3);
-    if (locations.hasOwnProperty("uvAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation[i], 2);
-    loadIndexBuffer(new Uint16Array(structInfo.indices));
+        loadArrayBuffer(new Float32Array(structInfo.vertices), locations.positionAttributeLocation[i], 3);
+        if (locations.hasOwnProperty("normalsAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.normals), locations.normalsAttributeLocation[i], 3);
+        if (locations.hasOwnProperty("uvAttributeLocation")) loadArrayBuffer(new Float32Array(structInfo.textures), locations.uvAttributeLocation[i], 2);
+        loadIndexBuffer(new Uint16Array(structInfo.indices));
+
+        assetsData[assetType].drawInfo.vao.push(vao);
+    }
 
     assetsData[assetType].drawInfo.bufferLength = assetsData[assetType].structInfo.indices.length;
-    assetsData[assetType].drawInfo.vao.push(vao);
 }
 
 function loadVaos() {
     loadVao(AssetType.ELECTRON);
     
-    loadVao(AssetType.HYDROGEN, Smooth.VERTEX);
-    loadVao(AssetType.HELIUM, Smooth.VERTEX);
-    loadVao(AssetType.CARBON, Smooth.VERTEX);
-    loadVao(AssetType.OXYGEN, Smooth.VERTEX);
-
-    loadVao(AssetType.HYDROGEN, Smooth.PIXEL);
-    loadVao(AssetType.HELIUM, Smooth.PIXEL);
-    loadVao(AssetType.CARBON, Smooth.PIXEL);
-    loadVao(AssetType.OXYGEN, Smooth.PIXEL);
+    loadVao(AssetType.HYDROGEN);
+    loadVao(AssetType.HELIUM);
+    loadVao(AssetType.CARBON);
+    loadVao(AssetType.OXYGEN);
     
     loadVao(AssetType.FLOOR);
 }

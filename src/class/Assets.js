@@ -32,6 +32,8 @@ let assetsData = [
             vao: [],
             ambientColor: [0.97, 0.89, 0.05, 1.0],
             emissionColor: [0.97, 0.89, 0.05, 1.0],
+            specShine: defaultSpecShine,
+            sigma: defaultSigma,
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
@@ -50,7 +52,17 @@ let assetsData = [
                 emissionColorLocation: [],
 
                 // Lights params
+                isDayLocation: [],
+                directLightDirectionLocation: [],
+                directLightColorLocation: [],
                 ambientLightLocation: [],
+
+                // BRDF
+                diffuseModeLocation: [],
+                specularModeLocation: [],
+                specShineLocation: [],
+                sigmaLocation: [],
+                eyePosLocation: []
             }
         },
         other: {
