@@ -49,16 +49,20 @@ let paths = {
     assets: "src/assets",
     shaders: {
         base: "src/shaders",
+        vertex: "/vertex",
+        pixel: "/pixel",
         vs: {
-            atomVertex: "/vertex/vs_AtomVertex.glsl",
-            atomPixel: "/pixel/vs_AtomPixel.glsl",
-            electron: "/vs_Electron.glsl",
+            atomVertex: "/vs_AtomVertex.glsl",
+            atomPixel: "/vs_AtomPixel.glsl",
+            electronVertex: "/vs_ElectronVertex.glsl",
+            electronPixel: "/vs_ElectronPixel.glsl",
             floor: "/vs_Floor.glsl",
         },
         fs: {
-            atomVertex: "/vertex/fs_AtomVertex.glsl",
-            atomPixel: "/pixel/fs_AtomPixel.glsl",
-            electron: "/fs_Electron.glsl",
+            atomVertex: "/fs_AtomVertex.glsl",
+            atomPixel: "/fs_AtomPixel.glsl",
+            electronVertex: "/fs_ElectronVertex.glsl",
+            electronPixel: "/fs_ElectronPixel.glsl",
             floor: "/fs_Floor.glsl",
         }
     },

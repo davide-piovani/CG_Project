@@ -29,20 +29,26 @@ function initializePaths() {
     paths.texture = paths.base + paths.texture;
 
     paths.shaders.base = paths.base + paths.shaders.base;
+    paths.shaders.vertex = paths.shaders.base + paths.shaders.vertex;
+    paths.shaders.pixel = paths.shaders.base + paths.shaders.pixel;
 
     paths.shaders.vs = {
-        atomVertex: paths.shaders.base + paths.shaders.vs.atomVertex,
-        atomPixel: paths.shaders.base + paths.shaders.vs.atomPixel,
-        electron: paths.shaders.base + paths.shaders.vs.electron,
+        atomVertex: paths.shaders.vertex + paths.shaders.vs.atomVertex,
+        atomPixel: paths.shaders.pixel + paths.shaders.vs.atomPixel,
+        electronVertex: paths.shaders.vertex + paths.shaders.vs.electronVertex,
+        electronPixel: paths.shaders.pixel + paths.shaders.vs.electronPixel,
         floor: paths.shaders.base + paths.shaders.vs.floor,
     }
 
     paths.shaders.fs = {
-        atomVertex: paths.shaders.base + paths.shaders.fs.atomVertex,
-        atomPixel: paths.shaders.base + paths.shaders.fs.atomPixel,
-        electron: paths.shaders.base + paths.shaders.fs.electron,
+        atomVertex: paths.shaders.vertex + paths.shaders.fs.atomVertex,
+        atomPixel: paths.shaders.pixel + paths.shaders.fs.atomPixel,
+        electronVertex: paths.shaders.vertex + paths.shaders.fs.electronVertex,
+        electronPixel: paths.shaders.pixel + paths.shaders.fs.electronPixel,
         floor: paths.shaders.base + paths.shaders.fs.floor,
     }
+
+    console.log(paths);
 }
 
 async function loadProgram(vs_path, fs_path) {
@@ -55,7 +61,8 @@ async function loadProgram(vs_path, fs_path) {
 }
 
 async function loadPrograms() {
-    assetsData[AssetType.ELECTRON].drawInfo.program.push(await loadProgram(paths.shaders.vs.electron, paths.shaders.fs.electron));
+    assetsData[AssetType.ELECTRON].drawInfo.program.push(await loadProgram(paths.shaders.vs.electronVertex, paths.shaders.fs.electronVertex));
+    assetsData[AssetType.ELECTRON].drawInfo.program.push(await loadProgram(paths.shaders.vs.electronPixel, paths.shaders.fs.electronPixel));
 
     let atomVertexProgram = await loadProgram(paths.shaders.vs.atomVertex, paths.shaders.fs.atomVertex);
     let atomPixelProgram = await loadProgram(paths.shaders.vs.atomPixel, paths.shaders.fs.atomPixel);
