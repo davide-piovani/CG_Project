@@ -47,8 +47,6 @@ function initializePaths() {
         electronPixel: paths.shaders.pixel + paths.shaders.fs.electronPixel,
         floor: paths.shaders.base + paths.shaders.fs.floor,
     }
-
-    console.log(paths);
 }
 
 async function loadProgram(vs_path, fs_path) {

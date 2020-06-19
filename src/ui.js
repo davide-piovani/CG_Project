@@ -201,27 +201,22 @@ function keyUp(e){
     let actual = objectsToRender[0];
 
     if (e.keyCode === 38) {  // Up arrow
-        //camera.rotateUp();
-        smoothType = Smooth.PIXEL;
-        console.log("Pixel");
+        camera.rotateUp();
     }
     if (e.keyCode === 40) {  // Down arrow
-       //camera.rotateDown();
-        smoothType = Smooth.VERTEX;
-        console.log("Vertex");
+       camera.rotateDown();
     }
 
     if (e.keyCode === 37) {  // Left arrow
-        //camera.rotateLeft();
-        setDayLight(false);
+        camera.rotateLeft();
     }
     if (e.keyCode === 39) {  // Right arrow
-        //camera.rotateRight();
-        setDayLight(true);
+        camera.rotateRight();
     }
 
     if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
         commandClicked = false;
+        setDayLight(!isDay);
     }
 
     if (e.keyCode === 88) {  // x
