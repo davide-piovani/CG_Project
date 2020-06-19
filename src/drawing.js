@@ -207,7 +207,7 @@ function setSigma(value) {
     if (value < 0) value = 0.0;
     if (value > Math.PI / 2.0) value = Math.PI / 2.0;
 
-    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
     for(let type of types) assetsData[type].drawInfo.sigma = value;
 }
 
@@ -217,13 +217,11 @@ function toggleSmooth() {
 
 function setDayLight(active) {
     if (active) {
-        assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0, 0, 0, 0];
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
-        ambientLight = 0.6;
+        ambientLight = 0.4;
         isDay = 1.0;
         console.log("Day");
     } else {
-        assetsData[AssetType.ELECTRON].drawInfo.emissionColor = [0.97, 0.89, 0.05, 1.0];
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
         ambientLight = 0.25;
         isDay = 0.0;

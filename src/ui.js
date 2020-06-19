@@ -187,7 +187,7 @@ function specularChooser(code)
 
 function gammaScroll()
 {
-    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
     for(let type of types) assetsData[type].drawInfo.specShine = gamma_slider.value;
 }
 

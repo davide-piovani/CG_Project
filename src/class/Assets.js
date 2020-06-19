@@ -19,7 +19,7 @@ let assetsData = [
     {
         type: AssetType.ELECTRON,
         defaultCords: {
-            s: 0.15
+            s: 0.08
         },
         structInfo: {
             vertices: null,
@@ -66,7 +66,8 @@ let assetsData = [
             }
         },
         other: {
-            electron_velocity: 0.2,
+            //electron_velocity: 0.2,
+            electron_velocity: 0,
             asset_radius: 1.6
         }
     },

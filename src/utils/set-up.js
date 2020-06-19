@@ -86,7 +86,7 @@ async function getStruct(path) {
 }
 
 async function loadAssetsStruct() {
-    let electronPath = paths.assets + "/E/electron.obj";
+    let electronPath = paths.assets + "/E/electron_new.obj";
     let carbonPath = paths.assets + "/C/nucleusC.obj";
     let hydrogenPath = paths.assets + "/H/nucleusH.obj";
     let heliumPath = paths.assets + "/He/nucleusHe.obj";
