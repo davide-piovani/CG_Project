@@ -11,6 +11,9 @@ let sigma, sigma_container;
 let g_slider, decay_slider;
 let gamma_slider, gamma_container;
 let vertex_button, pixel_button;
+let daynight_button;
+let electron_light_container, daylight_container;
+let daylight_intensity, daylight_x, daylight_y;
 
 function buttonController(assetType)
 {
@@ -151,6 +154,7 @@ function diffuseLightChooser(code)
             sigma.value = defaultSigma;
             diffuseMode = Diffuse.OREN_NAYAR;
             setSigma(defaultSigma);
+            specularChooser(Specular.NO);
             break;
     }
 }
@@ -274,11 +278,10 @@ function refreshSigmaValue()
     setSigma(sigma.value);
 }
 
-function refreshElectronValue(code) {
-    if(code === 'g')
-        assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = g_slider.value;
-    else
-        assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = decay_slider.value;
+function refreshElectronValue()
+{
+    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = g_slider.value;
+    assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay = decay_slider.value;
 }
 
 function toggleSmoothShading(value)
@@ -294,6 +297,39 @@ function toggleSmoothShading(value)
         smoothType = Smooth.VERTEX;
         pixel_button.style.backgroundColor = "#1199EE";
         vertex_button.style.backgroundColor = "red";
+    }
+}
+
+
+function updateDaylightParams()
+{
+    directLight = daylight_intensity.value;
+    directLight = daylight_intensity.value;
+    directLightXRot = daylight_x;
+    directLightYRot = daylight_y;
+}
+
+function toggleDayNight() {
+    if(daynight_button.innerText === "Night")
+    {
+        daynight_button.innerText = "Day";
+        daynight_button.style.backgroundColor = "red";
+        // SET LIGHT MODE
+        electron_light_container.style.display = "none";
+        daylight_container.style.display = "inherit";
+        updateDaylightParams();
+        setDayLight(true);
+
+    }
+    else
+    {
+        daynight_button.innerText = "Night";
+        daynight_button.style.backgroundColor = "#1199EE"
+        // SET NIGHT MODE
+        electron_light_container.style.display = "inherit";
+        daylight_container.style.display = "none";
+        refreshElectronValue();
+        setDayLight(false);
     }
 }
 
@@ -329,14 +365,23 @@ function setUpUI() {
     decay_slider = document.getElementById("decay_slider");
     g_slider = document.getElementById("g_slider");
     specularChooser(specularMode);
-
+    daynight_button = document.getElementById("daynight");
     g_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g;
     decay_slider.value = assetsData[AssetType.ELECTRON].drawInfo.lightInfo.decay;
     gamma_slider.value = defaultSpecShine;
+    electron_light_container = document.getElementById("electron_light_container");
+    daylight_container = document.getElementById("daylight_container");
 
-
-    refreshElectronValue('g');
-    refreshElectronValue('d');
+    daylight_x = document.getElementById("dl_x_slider");
+    daylight_y = document.getElementById("dl_y_slider");
+    daylight_intensity = document.getElementById("dl_intensity_slider");
+    daylight_x.value = directLightXRot;
+    daylight_y.value = directLightYRot;
+    daylight_intensity = directLight;
+    daylight_container.style.display = "none";
+    refreshElectronValue();
+    refreshSigmaValue();
+    updateDaylightParams();
     gammaScroll();
 
     toggleSmoothShading(smoothType);

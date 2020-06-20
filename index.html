@@ -45,7 +45,9 @@
                     <canvas id="canvas" style="z-index: 1" height="100%" width="100%"></canvas>
                 </div>
                 <div class="right" id="right_block_container" style="background-color: black;">
-
+                    <div>
+                        <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleDayNight()">Night</button>
+                    </div>
                     <div id="element_container" style="margin: 0px; margin-top: 10px;">
                         <p class="titles">Element:</p>
                         <button style="margin: 2px; margin-left: 0px;" id="H" name="H" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.HYDROGEN)">HYDROGEN</button>
@@ -84,7 +86,7 @@
                         <p class="titles">Diffuse light:</p>
                         <button style="margin: 2px; margin-left: 0px;" id="no_diffuse_light"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.NO)">No</button>
                         <button style="margin: 2px; margin-left: 0px;" id="lambert_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.LAMBERT)">Lambert</button>
-                        <button style="margin: 2px; margin-left: 0px;" id="oren_neyar_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.OREN_NAYAR)">Oren-Neyar</button>
+                        <button style="margin: 2px; margin-left: 0px;" id="oren_neyar_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.OREN_NAYAR)">Oren-Nayar</button>
                         <div id="sigma_container">
                             <p style="color: white; font-family: Helvetica; font-size: 10px">sigma:</p>
                             <input onmouseup="refreshSigmaValue()" oninput="refreshSigmaValue()" style="display: inherit" id="sigma" style="float: right" type="range" max="1.5707" value="0" step="0.0001">
@@ -97,18 +99,25 @@
                         <button style="margin: 2px; margin-left: 0px;" id="phong_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.PHONG)">Phong</button>
                         <button style="margin: 2px; margin-left: 0px;" id="blinn_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.BLINN)">Blinn</button>
                         <div id="specular_scroll_container">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: right" type="range" max="100" value="70" step="0.1">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: right" type="range" min="0.1" max="100" value="70" step="0.1">
                         </div>
                     </div>
 
                     <div style="float: left" id="electron_light_container" name="light_type_container">
                         <p class="titles">Electron light:</p>
                         <div style="float: left;">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px;">g value: </p><input id="g_slider" oninput="refreshElectronValue('g')" onmouseup="refreshElectronValue('g')" style="float: right" type="range" max="6" value="3" step="0.1">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px;">g value: </p><input id="g_slider" oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" style="float: right" type="range" max="6" value="3" step="0.1">
                         </div>
                         <div style="margin-left: 140px">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px">decay: </p><input oninput="refreshElectronValue('d')" onmouseup="refreshElectronValue('d')" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
+                            <p style="color: white; font-family: Helvetica; font-size: 10px">decay: </p><input oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
                         </div>
+                    </div>
+                    <br>
+                    <div id="daylight_container" style="float: left;">
+                        <p style="display: inherit;" class="titles">Daylight:</p>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">intensity: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_intensity_slider" style="float: right" type="range" min="0" max="1" value="0" step="0.01"></div>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">x rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_x_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">y rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_y_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
                     </div>
 
                     <div style="float: left" id="smooth_shading_container" name="light_type_container">
