@@ -303,10 +303,9 @@ function toggleSmoothShading(value)
 
 function updateDaylightParams()
 {
-    directLight = daylight_intensity.value;
-    directLight = daylight_intensity.value;
-    directLightXRot = daylight_x;
-    directLightYRot = daylight_y;
+    directLight = [daylight_intensity.value, daylight_intensity.value, daylight_intensity.value, 1.0];
+    directLightXRot = daylight_x.value;
+    directLightYRot = daylight_y.value;
 }
 
 function toggleDayNight() {
@@ -377,7 +376,7 @@ function setUpUI() {
     daylight_intensity = document.getElementById("dl_intensity_slider");
     daylight_x.value = directLightXRot;
     daylight_y.value = directLightYRot;
-    daylight_intensity = directLight;
+    daylight_intensity.value = directLight;
     daylight_container.style.display = "none";
     refreshElectronValue();
     refreshSigmaValue();

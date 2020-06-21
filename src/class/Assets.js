@@ -66,8 +66,8 @@ let assetsData = [
             }
         },
         other: {
-            //electron_velocity: 0.2,
             electron_velocity: 0.2,
+            //electron_velocity: 0.0,
             asset_radius: 1.6
         }
     },
