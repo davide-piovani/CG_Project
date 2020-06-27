@@ -202,13 +202,13 @@ function keyDown(e) {
 }
 
 function keyUp(e){
-    let actual = objectsToRender[0];
 
     if (e.keyCode === 38) {  // Up arrow
         camera.rotateUp();
     }
+
     if (e.keyCode === 40) {  // Down arrow
-       camera.rotateDown();
+        camera.rotateDown();
     }
 
     if (e.keyCode === 37) {  // Left arrow
@@ -220,28 +220,27 @@ function keyUp(e){
 
     if (e.keyCode === 91 || e.keyCode === 17) {  // command or control
         commandClicked = false;
+    }
+
+    if (e.keyCode === 78) {  // n
         setDayLight(!isDay);
     }
 
     if (e.keyCode === 88) {  // x
         camera.viewFromX();
-        //actual.parent.resetPosition();
     }
 
     if (e.keyCode === 89) {  // y
         camera.viewFromY();
-        //actual.parent.resetPosition();
     }
 
     if (e.keyCode === 90) {  // z
         camera.viewFromZ();
-        //actual.parent.resetPosition();
     }
 
     if (e.keyCode === 82) {  // r
-        actual.parent.resetPosition();
+        objectsToRender[0].parent.resetPosition();
     }
-
 }
 
 function keyPress(e){

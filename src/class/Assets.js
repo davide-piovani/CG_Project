@@ -8,7 +8,13 @@ let AssetType = {
     FLOOR: 6
 }
 
-let r = 1.0;
+let orbit_rad = {
+    H: 1.0,
+    He: 1.2,
+    C: 1.5,
+    O: 1.8,
+    max_ax: 3.2
+}
 
 let assetsData = [
     {
@@ -37,8 +43,8 @@ let assetsData = [
 
             lightInfo: {
                 color: [0.9, 0.9, 0.9, 1.0],
-                g: 4.0,
-                decay: 2.0
+                g: defaultG,
+                decay: defaultDecay
             },
 
             locations: {
@@ -67,7 +73,6 @@ let assetsData = [
         },
         other: {
             electron_velocity: 0.2,
-            //electron_velocity: 0.0,
             asset_radius: 1.6
         }
     },
@@ -125,7 +130,7 @@ let assetsData = [
         },
         other: {
             n_el: 1,
-            orbit: [r]
+            orbit: [orbit_rad.H]
         }
     },
 
@@ -182,7 +187,7 @@ let assetsData = [
         },
         other: {
             n_el: 2,
-            orbit: [r, r]
+            orbit: [orbit_rad.He, orbit_rad.He]
         }
     },
 
@@ -241,7 +246,7 @@ let assetsData = [
         },
         other: {
             n_el: 6,
-            orbit: [r, r, 2.0*r, 2.0*r, {a: 2.4*r, b: 3.2*r}, {a: 2.4*r, b: 3.2*r}]
+            orbit: [orbit_rad.C, orbit_rad.C, 2.0*orbit_rad.C, 2.0*orbit_rad.C, orbit_rad.max_ax*orbit_rad.C, orbit_rad.max_ax*orbit_rad.C]
         }
     },
 
@@ -300,7 +305,7 @@ let assetsData = [
         },
         other: {
             n_el: 8,
-            orbit: [r, r, 2.0*r, 2.0*r, {a: 2.4*r, b: 3.2*r}, {a: 2.4*r, b: 3.2*r}, {a: 2.4*r, b: 3.2*r}, {a: 2.4*r, b: 3.2*r}]
+            orbit: [orbit_rad.O, orbit_rad.O, 2.0*orbit_rad.O, 2.0*orbit_rad.O, orbit_rad.max_ax*orbit_rad.O, orbit_rad.max_ax*orbit_rad.O, orbit_rad.max_ax*orbit_rad.O, orbit_rad.max_ax*orbit_rad.O]
         }
     },
 

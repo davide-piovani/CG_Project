@@ -37,6 +37,23 @@ function setAtom(assetType) {
         lights.push(electron);
         objectsToRender.push(electron);
     }
+
+    // let from = 8;
+    // let to = 10;
+    //
+    // let solo = true;
+    // if (solo) to = from;
+    //
+    // for(let i = from-1; i < to; i++) {
+    //     if (i >= asset.other.n_el) return;
+    //     let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.707, z: 0.707});
+    //     electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
+    //     nodesToAnimate.push(electronOrbit);
+    //
+    //     let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
+    //     lights.push(electron);
+    //     objectsToRender.push(electron);
+    // }
 }
 
 function animate(){
@@ -168,16 +185,11 @@ async function init() {
     initElectronRadiusSquared();
 
     setAtom(AssetType.HYDROGEN);
-    //console.log(assetsData);
 
     main();
 }
 
 window.onresize = resizeCanvas
-
-function changeAmbientLight(value) {
-    if (value >= 0.0 && value <= 1.0) ambientLight = value;
-}
 
 function toggleFloor() {
     let floor = null;
@@ -211,20 +223,15 @@ function setSigma(value) {
     for(let type of types) assetsData[type].drawInfo.sigma = value;
 }
 
-function toggleSmooth() {
-    smoothType = smoothType === Smooth.VERTEX ? Smooth.PIXEL : Smooth.VERTEX;
-}
 
 function setDayLight(active) {
     if (active) {
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
         ambientLight = 0.4;
         isDay = 1.0;
-        console.log("Day");
     } else {
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
         ambientLight = 0.25;
         isDay = 0.0;
-        console.log("Night");
     }
 }

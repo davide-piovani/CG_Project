@@ -29,7 +29,7 @@ let nodesToAnimate = [];
 let lights = [];
 
 let camera = new Camera();
-let cameraVelocity = 0.1;
+let cameraVelocity = 0.3;
 let cameraRotationVelocity = 10.0;
 
 let ambientLight = 0.25;
@@ -39,6 +39,8 @@ let directLightYRot = 225.0;
 let rayCastingActive = 1.0;
 let defaultSpecShine = 70.0;
 let defaultSigma = 0.7;
+let defaultDecay = 1.0;
+let defaultG = 4.0;
 
 let diffuseMode = Diffuse.LAMBERT;
 let specularMode = Specular.BLINN;
@@ -69,47 +71,51 @@ let paths = {
     texture: "src/assets/texture.png"
 }
 
+let rap = 0.625;
+let delta = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
+
 let trajectories = [
     (perc, r) => {  // 1
+        perc += delta[0];
         return {x: r*Math.cos(2 * Math.PI * perc), y: 0.0, z: r*Math.sin(2 * Math.PI * perc)};
     },
 
     (perc, r) => {  // 2
-        perc += 0.1;
+        perc += delta[1];
         return {x: r*Math.cos(2 * Math.PI * perc), y: r*Math.sin(2 * Math.PI * perc), z: 0.0};
     },
 
     (perc, r) => {  // 3
+        perc += delta[2];
         return {x: r*Math.cos(2 * Math.PI * perc), y: 0.5*r*Math.sin(2 * Math.PI * perc), z: 0.5*r*Math.sin(2 * Math.PI * perc)};
     },
 
     (perc, r) => {  // 4
-        perc += 0.1;
+        perc += delta[3];
         return {x: r*Math.cos(2 * Math.PI * perc), y: -0.5*r*Math.sin(2 * Math.PI * perc), z: 0.5*r*Math.sin(2 * Math.PI * perc)};
     },
 
     (perc, r) => {  // 5
-        let c = Math.sqrt(r.b^2 - r.a^2);
-
-        return {x: r.a*Math.cos(2 * Math.PI * perc) - c, y: r.b*Math.sin(2 * Math.PI * perc), z: 0.0};
+        perc += delta[4];
+        let a = r, b = r*rap;
+        return {x: a*Math.cos(2 * Math.PI * perc) - a/4.0, y: b*Math.sin(2 * Math.PI * perc), z: 0.0};
     },
 
     (perc, r) => {  // 6
-        let c = Math.sqrt(r.b^2 - r.a^2);
-
-        return {x: r.a*Math.cos(2 * Math.PI * perc) + c, y: 0.0, z: r.b*Math.sin(2 * Math.PI * perc)};
+        perc += delta[5];
+        let a = r, b = r*rap;
+        return {x: a*Math.cos(2 * Math.PI * perc) + a/4.0, y: 0.0, z: b*Math.sin(2 * Math.PI * perc)};
     },
 
     (perc, r) => {  // 7
-        let c = Math.sqrt(r.b^2 - r.a^2);
-
-        return { x: 0.0, y: r.b*Math.sin(2 * Math.PI * perc), z: r.a*Math.cos(2 * Math.PI * perc) - c};
+        perc += delta[6];
+        let a = r, b = r*rap;
+        return {x: 0.0, y: b*Math.sin(2 * Math.PI * perc), z: a*Math.cos(2 * Math.PI * perc) - a/4.0};
     },
 
     (perc, r) => {  // 8
-        let c = Math.sqrt(r.b^2 - r.a^2);
-        perc += 0.1;
-
-        return {x: r.b*Math.sin(2 * Math.PI * perc), y: 0.0, z: r.a*Math.cos(2 * Math.PI * perc) + c};
+        perc += delta[7];
+        let a = r, b = r*rap;
+        return {x: b*Math.sin(2 * Math.PI * perc), y: 0.0, z: a*Math.cos(2 * Math.PI * perc) + a/4.0};
     },
 ]

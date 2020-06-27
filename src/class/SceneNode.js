@@ -30,13 +30,13 @@ class SceneNode {
     
     setPosition = (cords) => {
         if (cords){
-            if (cords.x) this.localCords.x = cords.x;
-            if (cords.y) this.localCords.y = cords.y;
-            if (cords.z) this.localCords.z = cords.z;
-            if (cords.rx) this.localCords.rx = cords.rx;
-            if (cords.ry) this.localCords.ry = cords.ry;
-            if (cords.rz) this.localCords.rz = cords.rz;
-            if (cords.s) this.localCords.s = cords.s;
+            if (cords.hasOwnProperty("x")) this.localCords.x = cords.x;
+            if (cords.hasOwnProperty("y")) this.localCords.y = cords.y;
+            if (cords.hasOwnProperty("z")) this.localCords.z = cords.z;
+            if (cords.hasOwnProperty("rx")) this.localCords.rx = cords.rx;
+            if (cords.hasOwnProperty("ry")) this.localCords.ry = cords.ry;
+            if (cords.hasOwnProperty("rz")) this.localCords.rz = cords.rz;
+            if (cords.hasOwnProperty("s")) this.localCords.s = cords.s;
         }
     }
 
