@@ -42,17 +42,14 @@
             <div style="background-color: black;">
 
                 <div class="left" id="left_block_container">
-                    <canvas id="canvas" style="z-index: 1" height="100%" width="100%"></canvas>
+                    <canvas id="canvas" style="z-index: 1;" height="100%" width="100%"></canvas>
                 </div>
-                <div class="right" id="right_block_container" style="background-color: black;">
-                    <div>
-                        <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleDayNight()">Night</button>
-                    </div>
+                <div class="right" id="right_block_container" style="background-color: black; overflow-y: auto; max-height: 100vh; padding-left: 10px;">
+
                     <div id="element_container" style="margin: 0px; margin-top: 10px;">
                         <p class="titles">Element:</p>
                         <button style="margin: 2px; margin-left: 0px;" id="H" name="H" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.HYDROGEN)">HYDROGEN</button>
                         <button style="margin: 2px; margin-left: 0px;" id="He" name="He" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.HELIUM)">HELIUM</button>
-                        <br>
                         <button style="margin: 2px; margin-left: 0px;" id="C" name="C" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.CARBON)">CARBON</button>
                         <button style="margin: 2px; margin-left: 0px;" id="O" name="O" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="buttonController(AssetType.OXYGEN)">OXYGEN</button>
                     </div>
@@ -74,9 +71,13 @@
                                 <p class="titles">Raycast:</p>
                                 <button style="margin: 2px; margin-left: 0px;" id="toggle_raycasting" name="toggle_raycasting" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleRaycast()">Active</button>
                             </div>
-                            <div style="float: right; margin-right: 100px" id="toggle_floor_container">
+                            <div style="float: left;" id="toggle_floor_container">
                                 <p class="titles">Floor:</p>
                                 <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleFloorUI()">Active</button>
+                            </div>
+                            <div style="float: left;">
+                                <p class="titles">Mode:</p>
+                                <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleDayNight()">Night</button>
                             </div>
                         </div>
                     </div>
@@ -88,7 +89,7 @@
                         <button style="margin: 2px; margin-left: 0px;" id="lambert_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.LAMBERT)">Lambert</button>
                         <button style="margin: 2px; margin-left: 0px;" id="oren_neyar_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.OREN_NAYAR)">Oren-Nayar</button>
                         <div id="sigma_container">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px">sigma:</p>
+                            <p style="color: white; font-family: Helvetica; font-size: 12px">sigma:</p>
                             <input onmouseup="refreshSigmaValue()" oninput="refreshSigmaValue()" style="display: inherit" id="sigma" style="float: right" type="range" max="1.5707" value="0" step="0.0001">
                         </div>
                     </div>
@@ -99,25 +100,25 @@
                         <button style="margin: 2px; margin-left: 0px;" id="phong_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.PHONG)">Phong</button>
                         <button style="margin: 2px; margin-left: 0px;" id="blinn_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.BLINN)">Blinn</button>
                         <div id="specular_scroll_container">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: right" type="range" min="0.1" max="100" value="70" step="0.1">
+                            <p style="color: white; font-family: Helvetica; font-size: 12px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: left" type="range" min="1" max="100" value="70" step="0.1">
                         </div>
                     </div>
 
                     <div style="float: left" id="electron_light_container" name="light_type_container">
                         <p class="titles">Electron light:</p>
                         <div style="float: left;">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px;">g value: </p><input id="g_slider" oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" style="float: right" type="range" max="6" value="3" step="0.1">
+                            <p style="color: white; font-family: Helvetica; font-size: 12px;">g value: </p><input id="g_slider" oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" style="float: right" type="range" max="6" value="3" step="0.1">
                         </div>
-                        <div style="margin-left: 140px">
-                            <p style="color: white; font-family: Helvetica; font-size: 10px">decay: </p><input oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
+                        <div style="float:left;">
+                            <p style="color: white; font-family: Helvetica; font-size: 12px">decay: </p><input oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" id="decay_slider" style="float: right" type="range" max="2" value="0" step="1">
                         </div>
                     </div>
                     <br>
                     <div id="daylight_container" style="float: left;">
                         <p style="display: inherit;" class="titles">Daylight:</p>
-                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">intensity: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_intensity_slider" style="float: right" type="range" min="0" max="1" value="0" step="0.01"></div>
-                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">x rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_x_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
-                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 10px">y rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_y_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">intensity: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_intensity_slider" style="float: right" type="range" min="0" max="1" value="0" step="0.01"></div>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">x rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_x_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
+                        <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">y rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_y_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
                     </div>
 
                     <div style="float: left" id="smooth_shading_container" name="light_type_container">

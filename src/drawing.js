@@ -13,7 +13,7 @@ function setAtom(assetType) {
     atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
 
     objectsToRender.push(atom);
-    toggleFloor();
+    //toggleFloor();
 
 
     // let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.8, y: 0.05});
@@ -185,6 +185,8 @@ async function init() {
     initElectronRadiusSquared();
 
     setAtom(AssetType.HYDROGEN);
+
+    toggleFloor();
 
     main();
 }

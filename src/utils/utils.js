@@ -84,7 +84,7 @@ getDir:function(rotX, rotY) {
 
  resizeCanvasToDisplaySize:function(canvas) {
     const expandFullScreen = () => {
-      canvas.width = window.innerWidth-300;
+      canvas.width = window.innerWidth-400;
       canvas.height = window.innerHeight;
       //console.log(canvas.width+" "+window.innerWidth);
 
