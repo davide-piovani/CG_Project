@@ -6,7 +6,7 @@ class Camera {
     }
 
     projectionInfo = {
-        a: 1.0, n: 0.1, f: 100.0, w: 3, fieldOfView: 90
+        a: 1.0, n: 0.1, f: 100.0, fieldOfView: 90
     }
 
     viewMatrix;
@@ -23,7 +23,6 @@ class Camera {
     }
 
     updateProjectionMatrix = () => {
-        //this.projectionMatrix = utils.MakeParallel(this.projectionInfo.w, this.projectionInfo.a, this.projectionInfo.n, this.projectionInfo.f);
         this.projectionMatrix = utils.MakePerspective(this.projectionInfo.fieldOfView, this.projectionInfo.a, this.projectionInfo.n, this.projectionInfo.f);
     }
 

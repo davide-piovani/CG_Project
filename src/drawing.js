@@ -13,20 +13,7 @@ function setAtom(assetType) {
     atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
 
     objectsToRender.push(atom);
-    //toggleFloor();
-
-
-    // let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.8, y: 0.05});
-    //
-    // let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
-    // lights.push(electron);
-    // objectsToRender.push(electron);
-    //
-    // let electronOrbit2 = new SceneNode(atomOrbit, null, {x: 1.2, y: 0.15});
-    //
-    // let electron2 = new SceneNode(electronOrbit2, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
-    // lights.push(electron2);
-    // objectsToRender.push(electron2);
+    setFloor(floorIsVisible);
 
     for(let i = 0; i < asset.other.n_el; i++) {
         let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.707, z: 0.707});
@@ -37,23 +24,6 @@ function setAtom(assetType) {
         lights.push(electron);
         objectsToRender.push(electron);
     }
-
-    // let from = 8;
-    // let to = 10;
-    //
-    // let solo = true;
-    // if (solo) to = from;
-    //
-    // for(let i = from-1; i < to; i++) {
-    //     if (i >= asset.other.n_el) return;
-    //     let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.707, z: 0.707});
-    //     electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
-    //     nodesToAnimate.push(electronOrbit);
-    //
-    //     let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
-    //     lights.push(electron);
-    //     objectsToRender.push(electron);
-    // }
 }
 
 function animate(){
@@ -135,7 +105,6 @@ function loadNightUniforms(drawInfo, locations, index, objectInverseWorldMatrix)
 }
 
 
-
 function drawScene() {
     animate();
 
@@ -186,54 +155,7 @@ async function init() {
 
     setAtom(AssetType.HYDROGEN);
 
-    toggleFloor();
-
     main();
 }
 
 window.onresize = resizeCanvas
-
-function toggleFloor() {
-    let floor = null;
-    let index;
-
-    for(index = 0; index < objectsToRender.length; index++){
-        if (objectsToRender[index].assetType === AssetType.FLOOR) {
-            floor = objectsToRender[index];
-            break;
-        }
-    }
-
-    if (floor) {
-        objectsToRender.splice(index, 1);
-    } else {
-        objectsToRender.push(new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords));
-    }
-}
-
-
-function setSpecShine(value) {
-    let types = [AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
-    for(let type of types) assetsData[type].drawInfo.specShine = value;
-}
-
-function setSigma(value) {
-    if (value < 0) value = 0.0;
-    if (value > Math.PI / 2.0) value = Math.PI / 2.0;
-
-    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
-    for(let type of types) assetsData[type].drawInfo.sigma = value;
-}
-
-
-function setDayLight(active) {
-    if (active) {
-        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
-        ambientLight = 0.4;
-        isDay = 1.0;
-    } else {
-        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
-        ambientLight = 0.25;
-        isDay = 0.0;
-    }
-}

@@ -69,15 +69,15 @@
                         <div  style="margin: 0px;">
                             <div style="float: left;" id="toggle_raycasting_container">
                                 <p class="titles">Raycast:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="toggle_raycasting" name="toggle_raycasting" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleRaycast()">Active</button>
+                                <button style="margin: 2px; margin-left: 0px;" id="toggle_raycasting" name="toggle_raycasting" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setRaycast(!rayCastingActive)">Active</button>
                             </div>
                             <div style="float: left;" id="toggle_floor_container">
                                 <p class="titles">Floor:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleFloorUI()">Active</button>
+                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setFloor(!floorIsVisible)">Active</button>
                             </div>
                             <div style="float: left;">
                                 <p class="titles">Mode:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleDayNight()">Night</button>
+                                <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setDayLight(!isDay)">Night</button>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                         <button style="margin: 2px; margin-left: 0px;" id="oren_neyar_diffuse_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="diffuseLightChooser(Diffuse.OREN_NAYAR)">Oren-Nayar</button>
                         <div id="sigma_container">
                             <p style="color: white; font-family: Helvetica; font-size: 12px">sigma:</p>
-                            <input onmouseup="refreshSigmaValue()" oninput="refreshSigmaValue()" style="display: inherit" id="sigma" style="float: right" type="range" max="1.5707" value="0" step="0.0001">
+                            <input onmouseup="setSigma(sigma.value)" oninput="setSigma(sigma.value)" style="display: inherit" id="sigma" style="float: right" type="range" max="1.5707" value="0" step="0.0001">
                         </div>
                     </div>
 

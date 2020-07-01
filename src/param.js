@@ -16,9 +16,9 @@ let Smooth = {
 }
 
 let gl;
-let isDay = 0.0;
+let isDay = 1.0;
 let dayCanvasColor = 0.9;
-let nightCanvasColor = 0.0;
+let nightCanvasColor = 0.05;
 
 let rootNode = new SceneNode();
 let atomOrbit = new SceneNode();
@@ -36,11 +36,12 @@ let ambientLight = 0.25;
 let directLight = [0.7, 0.7, 0.7, 1.0];
 let directLightXRot = 45.0;
 let directLightYRot = 225.0;
-let rayCastingActive = 1.0;
+let rayCastingActive = 0.0;
 let defaultSpecShine = 70.0;
 let defaultSigma = 0.7;
 let defaultDecay = 1.0;
 let defaultG = 4.0;
+let floorIsVisible = 1.0;
 
 let diffuseMode = Diffuse.LAMBERT;
 let specularMode = Specular.BLINN;

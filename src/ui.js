@@ -94,37 +94,34 @@ function setCamera(code)
     }
 }
 
-function toggleRaycast() {
-    if(raycast_button.innerText === "Active")
-    {
-        raycast_button.innerText = "Not active";
-        raycast_button.style.backgroundColor = "#1199EE";
-        rayCastingActive = 0.0;
-        // DEACTIVATE RAYCAST
-    }
-    else
-    {
+function setRaycast(active) {
+    if (active) {
         raycast_button.innerText = "Active";
         raycast_button.style.backgroundColor = "red";
         rayCastingActive = 1.0;
-        // ACTIVATE RAYCAST
+    } else {
+        raycast_button.innerText = "Not active";
+        raycast_button.style.backgroundColor = "#1199EE";
+        rayCastingActive = 0.0;
     }
 }
 
-function toggleFloorUI() {
-    if(floor_button.innerText === "Active")
-    {
-        floor_button.innerText = "Not active";
-        floor_button.style.backgroundColor = "#1199EE";
-        toggleFloor();
-        // DEACTIVATE FLOOR
-    }
-    else
-    {
+function setFloor(active) {
+    if (active) {
+        floorIsVisible = 1.0;
+        objectsToRender.push(new SceneNode(rootNode, AssetType.FLOOR, assetsData[AssetType.FLOOR].defaultCords));
         floor_button.innerText = "Active";
         floor_button.style.backgroundColor = "red";
-        toggleFloor();
-        // ACTIVATE FLOOR
+    } else {
+        floorIsVisible = 0.0;
+        for(let index = 0; index < objectsToRender.length; index++){
+            if (objectsToRender[index].assetType === AssetType.FLOOR) {
+                objectsToRender.splice(index, 1);
+                break;
+            }
+        }
+        floor_button.innerText = "Not active";
+        floor_button.style.backgroundColor = "#1199EE";
     }
 }
 
@@ -186,6 +183,38 @@ function specularChooser(code)
             gammaScroll();
             gamma_container.style.display = "inherit";
             break;
+    }
+}
+
+function setSigma(value) {
+    if (value < 0) value = 0.0;
+    if (value > Math.PI / 2.0) value = Math.PI / 2.0;
+
+    let types = [AssetType.ELECTRON, AssetType.HYDROGEN, AssetType.HELIUM, AssetType.CARBON, AssetType.OXYGEN];
+    for(let type of types) assetsData[type].drawInfo.sigma = value;
+}
+
+function setDayLight(active) {
+    if (active) {
+        daynight_button.innerText = "Day";
+        daynight_button.style.backgroundColor = "red";
+        electron_light_container.style.display = "none";
+        daylight_container.style.display = "inherit";
+        updateDaylightParams();
+
+        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
+        ambientLight = 0.50;
+        isDay = 1.0;
+    } else {
+        daynight_button.innerText = "Night";
+        daynight_button.style.backgroundColor = "#1199EE"
+        electron_light_container.style.display = "inherit";
+        daylight_container.style.display = "none";
+        refreshElectronValue();
+
+        assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
+        ambientLight = 0.25;
+        isDay = 0.0;
     }
 }
 
@@ -272,11 +301,6 @@ function mouseMove(e) {
     }
 }
 
-function refreshSigmaValue()
-{
-    setSigma(sigma.value);
-}
-
 function refreshElectronValue()
 {
     assetsData[AssetType.ELECTRON].drawInfo.lightInfo.g = g_slider.value;
@@ -305,30 +329,6 @@ function updateDaylightParams()
     directLight = [daylight_intensity.value, daylight_intensity.value, daylight_intensity.value, 1.0];
     directLightXRot = daylight_x.value;
     directLightYRot = daylight_y.value;
-}
-
-function toggleDayNight() {
-    if(daynight_button.innerText === "Night")
-    {
-        daynight_button.innerText = "Day";
-        daynight_button.style.backgroundColor = "red";
-        // SET LIGHT MODE
-        electron_light_container.style.display = "none";
-        daylight_container.style.display = "inherit";
-        updateDaylightParams();
-        setDayLight(true);
-
-    }
-    else
-    {
-        daynight_button.innerText = "Night";
-        daynight_button.style.backgroundColor = "#1199EE"
-        // SET NIGHT MODE
-        electron_light_container.style.display = "inherit";
-        daylight_container.style.display = "none";
-        refreshElectronValue();
-        setDayLight(false);
-    }
 }
 
 function setUpUI() {
@@ -378,9 +378,12 @@ function setUpUI() {
     daylight_intensity.value = directLight;
     daylight_container.style.display = "none";
     refreshElectronValue();
-    refreshSigmaValue();
+    setSigma(sigma.value);
     updateDaylightParams();
     gammaScroll();
+    setRaycast(rayCastingActive);
+    setFloor(floorIsVisible);
+    setDayLight(isDay);
 
     toggleSmoothShading(smoothType);
 
