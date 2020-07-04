@@ -67,17 +67,17 @@
                     <br>
                     <div>
                         <div  style="margin: 0px;">
-                            <div style="float: left;" id="toggle_raycasting_container">
-                                <p class="titles">Raycast:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="toggle_raycasting" name="toggle_raycasting" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setRaycast(!rayCastingActive)">Active</button>
-                            </div>
-                            <div style="float: left;" id="toggle_floor_container">
-                                <p class="titles">Floor:</p>
-                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setFloor(!floorIsVisible)">Active</button>
-                            </div>
                             <div style="float: left;">
                                 <p class="titles">Mode:</p>
                                 <button style="margin: 2px; margin-left: 0px;" id="daynight" name="daynight" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setDayLight(!isDay)">Night</button>
+                            </div>
+                            <div style="float: left; margin-left: 40px; margin-right: 40px" id="toggle_floor_container">
+                                <p class="titles">Floor:</p>
+                                <button style="margin: 2px; margin-left: 0px;" id="toggle_floor" name="toggle_floor" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setFloor(!floorIsVisible)">Active</button>
+                            </div>
+                            <div style="float: left;" id="toggle_raycasting_container">
+                                <p class="titles">Raycast:</p>
+                                <button style="margin: 2px; margin-left: 0px;" id="toggle_raycasting" name="toggle_raycasting" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="setRaycast(!rayCastingActive)">Active</button>
                             </div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         </div>
                     </div>
 
-                    <div style="float: left" id="specular_light_type_container" name="light_type_container">
+                    <div style="float: left; margin-right: 150px;" id="specular_light_type_container" name="light_type_container">
                         <p class="titles">Specular light:</p>
                         <button style="margin: 2px; margin-left: 0px;" id="no_specular_light"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.NO)">No</button>
                         <button style="margin: 2px; margin-left: 0px;" id="phong_specular_light" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="specularChooser(Specular.PHONG)">Phong</button>
@@ -103,8 +103,9 @@
                             <p style="color: white; font-family: Helvetica; font-size: 12px" >gamma value: </p><input oninput="gammaScroll()" onmouseup="gammaScroll()" id="specular_slider" style="float: left" type="range" min="1" max="100" value="70" step="0.1">
                         </div>
                     </div>
+                    <br>
 
-                    <div style="float: left" id="electron_light_container" name="light_type_container">
+                    <div style="float: left;" id="electron_light_container" name="light_type_container">
                         <p class="titles">Electron light:</p>
                         <div style="float: left;">
                             <p style="color: white; font-family: Helvetica; font-size: 12px;">g value: </p><input id="g_slider" oninput="refreshElectronValue()" onmouseup="refreshElectronValue()" style="float: right" type="range" max="6" value="3" step="0.1">
@@ -114,17 +115,18 @@
                         </div>
                     </div>
                     <br>
-                    <div id="daylight_container" style="float: left;">
+                    <div id="daylight_container" style="float: left; margin-right: 200px">
                         <p style="display: inherit;" class="titles">Daylight:</p>
                         <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">intensity: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_intensity_slider" style="float: right" type="range" min="0" max="1" value="0" step="0.01"></div>
                         <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">x rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_x_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
                         <div><p style="display: inherit; color: white; font-family: Helvetica; font-size: 12px">y rotation: </p><input oninput="updateDaylightParams()" onmouseup="updateDaylightParams()" id="dl_y_slider" style="float: right" type="range" min="0" max="360" value="0" step="1"></div>
                     </div>
+                    <br>
 
                     <div style="float: left" id="smooth_shading_container" name="light_type_container">
                         <p class="titles">Smooth shading:</p>
-                        <button style="margin: 2px; margin-left: 0px;" id="vertex_shading_button"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleSmoothShading(Smooth.VERTEX)">Vertex</button>
                         <button style="margin: 2px; margin-left: 0px;" id="pixel_shading_button" class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleSmoothShading(Smooth.PIXEL)">Pixel</button>
+                        <button style="margin: 2px; margin-left: 0px;" id="vertex_shading_button"  class="pushy__btn pushy__btn--sm pushy__btn--blue" onclick="toggleSmoothShading(Smooth.VERTEX)">Vertex</button>
                     </div>
 
                 </div>

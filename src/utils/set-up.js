@@ -1,6 +1,6 @@
 function eraseCanvas() {
-    if (isDay) gl.clearColor(dayCanvasColor, dayCanvasColor, dayCanvasColor, 1.0);
-    else gl.clearColor(nightCanvasColor, nightCanvasColor, nightCanvasColor, 1.0);
+    let canvasColor = isDay ? dayCanvasColor : nightCanvasColor;
+    gl.clearColor(canvasColor, canvasColor, canvasColor, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 

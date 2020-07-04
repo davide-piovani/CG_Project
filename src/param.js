@@ -33,6 +33,8 @@ let cameraVelocity = 0.3;
 let cameraRotationVelocity = 10.0;
 
 let ambientLight = 0.25;
+let dayAmbientLight = 0.50;
+let nightAmbientLight = 0.25;
 let directLight = [0.7, 0.7, 0.7, 1.0];
 let directLightXRot = 45.0;
 let directLightYRot = 225.0;

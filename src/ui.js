@@ -203,7 +203,7 @@ function setDayLight(active) {
         updateDaylightParams();
 
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.dayColor;
-        ambientLight = 0.50;
+        ambientLight = dayAmbientLight;
         isDay = 1.0;
     } else {
         daynight_button.innerText = "Night";
@@ -213,7 +213,7 @@ function setDayLight(active) {
         refreshElectronValue();
 
         assetsData[AssetType.FLOOR].drawInfo.ambientColor = assetsData[AssetType.FLOOR].drawInfo.nightColor;
-        ambientLight = 0.25;
+        ambientLight = nightAmbientLight;
         isDay = 0.0;
     }
 }
@@ -268,7 +268,7 @@ function keyUp(e){
     }
 
     if (e.keyCode === 82) {  // r
-        objectsToRender[0].parent.resetPosition();
+        atomOrbit.resetPosition();
     }
 }
 

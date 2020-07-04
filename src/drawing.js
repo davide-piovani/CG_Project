@@ -1,29 +1,37 @@
 let startTime = (new Date).getTime();
 
-function setAtom(assetType) {
+function resetScene() {
     rootNode = new SceneNode();
 
     objectsToRender = [];
     lights = [];
     nodesToAnimate = [];
 
-    let asset = assetsData[assetType];
-
-    atomOrbit = new SceneNode(rootNode);
-    atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
-
-    objectsToRender.push(atom);
     setFloor(floorIsVisible);
+}
 
-    for(let i = 0; i < asset.other.n_el; i++) {
-        let electronOrbit = new SceneNode(atomOrbit, null, {x: 0.707, z: 0.707});
-        electronOrbit.setAnimation(new ElectronAnimation(asset.other.orbit[i], trajectories[i]));
+function spawnElectrons(n, orbits) {
+    for(let i = 0; i < n; i++) {
+        let electronOrbit = new SceneNode(atomOrbit, null);
+        electronOrbit.setAnimation(new ElectronAnimation(orbits[i], trajectories[i]));
         nodesToAnimate.push(electronOrbit);
 
         let electron = new SceneNode(electronOrbit, AssetType.ELECTRON, assetsData[AssetType.ELECTRON].defaultCords);
         lights.push(electron);
         objectsToRender.push(electron);
     }
+}
+
+function setAtom(assetType) {
+    resetScene();
+
+    let asset = assetsData[assetType];
+
+    atomOrbit = new SceneNode(rootNode);
+    atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
+    objectsToRender.push(atom);
+
+    spawnElectrons(asset.other.n_el, asset.other.orbit);
 }
 
 function animate(){
@@ -111,10 +119,11 @@ function drawScene() {
     eraseCanvas();
     rootNode.updateWorldMatrix();
 
+    let vpMatrix = utils.multiplyMatrices(camera.projectionMatrix, camera.viewMatrix);
+
     objectsToRender.forEach((sceneNode) => {
+        let wvpMatrix = utils.multiplyMatrices(vpMatrix, sceneNode.worldMatrix);
         let inverseWorldMatrix = utils.invertMatrix(sceneNode.worldMatrix);
-        let worldViewMatrix = utils.multiplyMatrices(camera.viewMatrix, sceneNode.worldMatrix);
-        let wvpMatrix = utils.multiplyMatrices(camera.projectionMatrix, worldViewMatrix);
 
         let drawInfo = assetsData[sceneNode.assetType].drawInfo;
         let locations = drawInfo.locations;
@@ -135,8 +144,12 @@ function drawScene() {
 }
 
 function main() {
+    initElectronRadiusSquared();
+    setAtom(AssetType.HYDROGEN);
+
     camera.updateViewMatrix();
     camera.updateProjectionMatrix();
+
     loadAttribAndUniformsLocations();
     loadVaos();
 
@@ -150,10 +163,6 @@ async function init() {
     await loadPrograms();
     await loadAssetsStruct();
     loadTexture();
-
-    initElectronRadiusSquared();
-
-    setAtom(AssetType.HYDROGEN);
 
     main();
 }
