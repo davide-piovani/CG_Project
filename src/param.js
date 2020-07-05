@@ -48,6 +48,7 @@ let floorIsVisible = 1.0;
 let diffuseMode = Diffuse.LAMBERT;
 let specularMode = Specular.BLINN;
 let smoothType = Smooth.PIXEL;
+let animationActive = true;
 
 let paths = {
     base: "",

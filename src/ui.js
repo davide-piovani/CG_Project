@@ -270,6 +270,12 @@ function keyUp(e){
     if (e.keyCode === 82) {  // r
         atomOrbit.resetPosition();
     }
+
+    if (e.keyCode === 80) {  // p
+        animationActive = !animationActive;
+        if (animationActive) lastTimeStamp = (new Date).getTime();
+    }
+
 }
 
 function keyPress(e){

@@ -1,4 +1,5 @@
-let startTime = (new Date).getTime();
+let lastTimeStamp = (new Date).getTime();
+let elapsedTime = 0;
 
 function resetScene() {
     rootNode = new SceneNode();
@@ -35,7 +36,9 @@ function setAtom(assetType) {
 
 function animate(){
     let currentTime = (new Date).getTime();
-    let elapsedTime = currentTime - startTime;
+    let deltaTime = currentTime - lastTimeStamp;
+    lastTimeStamp = currentTime;
+    elapsedTime += deltaTime;
 
     nodesToAnimate.forEach((sceneNode) => {
         if (sceneNode.animation != null) {
@@ -113,7 +116,7 @@ function loadNightUniforms(drawInfo, locations, index, objectInverseWorldMatrix)
 
 
 function drawScene() {
-    animate();
+    if (animationActive) animate();
 
     eraseCanvas();
     rootNode.updateWorldMatrix();
