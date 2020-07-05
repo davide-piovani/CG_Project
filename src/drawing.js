@@ -6,8 +6,6 @@ function resetScene() {
     objectsToRender = [];
     lights = [];
     nodesToAnimate = [];
-
-    setFloor(floorIsVisible);
 }
 
 function spawnElectrons(n, orbits) {
@@ -30,6 +28,7 @@ function setAtom(assetType) {
     atomOrbit = new SceneNode(rootNode);
     atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
     objectsToRender.push(atom);
+    setFloor(floorIsVisible);
 
     spawnElectrons(asset.other.n_el, asset.other.orbit);
 }

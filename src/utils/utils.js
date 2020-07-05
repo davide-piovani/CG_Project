@@ -548,7 +548,7 @@ getDir:function(rotX, rotY) {
 		return out;
 	},
 
-	MakeView: function(cx, cy, cz, elev, ang) {
+	MakeLookIn: function(cx, cy, cz, elev, ang) {
 		// Creates in {out} a view matrix. The camera is centerd in ({cx}, {cy}, {cz}).
 		// It looks {ang} degrees on y axis, and {elev} degrees on the x axis.
 

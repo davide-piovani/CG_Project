@@ -19,7 +19,7 @@ class Camera {
     mode = this.Mode.OUTSIDE;
 
     updateViewMatrix = () => {
-        this.viewMatrix = utils.MakeView(this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, this.viewInfo.elev, this.viewInfo.angle);
+        this.viewMatrix = utils.MakeLookIn(this.viewInfo.x, this.viewInfo.y, this.viewInfo.z, this.viewInfo.elev, this.viewInfo.angle);
     }
 
     updateProjectionMatrix = () => {
@@ -95,8 +95,7 @@ class Camera {
         let translateVector = [magnitude*cameraDir[0]*cameraVelocity, magnitude*cameraDir[1]*cameraVelocity, magnitude*cameraDir[2]*cameraVelocity];
         let translateMatrix = utils.MakeTranslateMatrix(translateVector[0], translateVector[1], translateVector[2]);
         let newPos = utils.multiplyMatrixVector(translateMatrix, this.getWorldPosition());
-        this.setPosition({x: newPos[0], y: newPos[1], z: newPos[2]})
-        this.updateViewMatrix();
+        this.setPosition({x: newPos[0], y: newPos[1], z: newPos[2]});
     }
 
     moveBackward = () => {
