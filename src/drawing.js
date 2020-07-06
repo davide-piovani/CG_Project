@@ -11,7 +11,7 @@ function resetScene() {
 
 function spawnElectrons(n, orbits) {
     for(let i = 0; i < n; i++) {
-        let electronOrbit = new SceneNode(atomOrbit, null);
+        let electronOrbit = new SceneNode(atomOrbit);
         electronOrbit.setAnimation(new ElectronAnimation(orbits[i], trajectories[i]));
         nodesToAnimate.push(electronOrbit);
 
@@ -28,7 +28,7 @@ function setAtom(assetType) {
 
     atomOrbit = new SceneNode(rootNode);
     atom = new SceneNode(atomOrbit, assetType, asset.defaultCords);
-    objectsToRender.push(atom);
+    if (camera.mode !== camera.Mode.INSIDE) objectsToRender.push(atom);
     setFloor(floorIsVisible);
 
     spawnElectrons(asset.other.n_el, asset.other.orbit);

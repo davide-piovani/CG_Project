@@ -64,7 +64,13 @@ class Camera {
             objectsToRender.unshift(atom);
         } else {
             camera.setPosition({x: 0.0, y: 0.0, z: 0.0, elev: 0.0, angle: 0.0});
-            objectsToRender.splice(0, 1);
+
+            let newObjs = [];
+            objectsToRender.forEach((obj) => {
+               if (obj.assetType !== atom.assetType) newObjs.push(obj);
+            });
+
+            objectsToRender = newObjs;
         }
     }
 
